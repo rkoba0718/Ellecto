@@ -1,0 +1,8 @@
+#node_module
+node_modules/
+
+#入力ファイル
+input/
+
+#出力ファイル
+out/

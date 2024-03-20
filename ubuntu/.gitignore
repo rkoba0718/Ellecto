@@ -1,0 +1,8 @@
+#入力ファイル
+input.txt
+
+#出力ファイル
+out/
+
+#testファイル
+*test*

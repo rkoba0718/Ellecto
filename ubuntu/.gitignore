@@ -6,3 +6,6 @@ out/
 
 #testファイル
 *test*
+
+#module
+node_module*/

@@ -8,6 +8,8 @@ const jsonFilePath = process.argv[2];
 
 async function main() {
     const client = new MongoClient(url, { useUnifiedTopology: true });
+    const [dir_name, file_name] = jsonFilePath.split('/');
+    const [package_name, extension] = file_name.split('.');
 
     try {
         // MongoDBに接続
@@ -21,6 +23,7 @@ async function main() {
         // JSONファイルからデータを読み取り
         const jsonData = fs.readFileSync(jsonFilePath, 'utf8');
         const data = JSON.parse(jsonData);
+        data._id = package_name;
 
         // データを挿入
         const result = await collection.insertOne(data);

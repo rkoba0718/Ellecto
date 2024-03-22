@@ -47,7 +47,7 @@ const separateNameAndVersion = (values) => {
   return output;
 }
 
-const parseControlFile = (controlFileContent, package_name) => {
+const parseControlFile = (controlFileContent) => {
   const lines = controlFileContent.split('\n');
 
   let previousKey = '';
@@ -56,7 +56,7 @@ const parseControlFile = (controlFileContent, package_name) => {
     detail: ''
   };
   let values = [];
-  let currentPackage = {package_name};
+  let currentPackage = {};
   let package_counter = 1;
   let package_flag = false;
 
@@ -189,15 +189,9 @@ const parseControlFile = (controlFileContent, package_name) => {
   return currentPackage;
 }
 
-const convertToJSON = (controlFileContent, package_name) => {
-  const packages = parseControlFile(controlFileContent, package_name);
-  const jsonData = {};
-
-  const packageName = packages['package_name'];
-  delete packages['package_name'];
-  jsonData[packageName] = packages;
-
-  return jsonData;
+const convertToJSON = (controlFileContent) => {
+  const packages = parseControlFile(controlFileContent);
+  return packages;
 }
 
 function main() {

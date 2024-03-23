@@ -28,3 +28,6 @@ services:
   ubuntu-data-extract:
     build: data-extract/ubuntu
     tty: true
+  crosssim-fine-tuining:
+    build: similarity-model/
+    tty: true

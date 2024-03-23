@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
 
-const url = 'mongodb://root:password@dataextracts-mongo-1:27017';
+const url = 'mongodb://root:password@ossprojectmap-mongo-1:27017';
 const dbName = 'testDB';
 
 const jsonFilePath = process.argv[2];

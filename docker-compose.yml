@@ -26,5 +26,5 @@ services:
     depends_on:
       - mongo
   ubuntu-data-extract:
-    build: ubuntu
+    build: data-extract/ubuntu
     tty: true

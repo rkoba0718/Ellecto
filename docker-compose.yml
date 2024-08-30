@@ -3,7 +3,7 @@ version: '3.1'
 services:
   mongo:
     image: mongo
-    restart: always
+    # restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
@@ -13,7 +13,7 @@ services:
       - ./db:/data/db
   mongo-express:
     image: mongo-express
-    restart: always
+    # restart: always
     ports:
       - 8081:8081
     environment:
@@ -31,3 +31,19 @@ services:
   crosssim-fine-tuining:
     build: similarity-model/
     tty: true
+  visualize-tool:
+    image: node:18.17.1
+    working_dir: /app
+    volumes:
+      - ./visualize-tool:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGODB_URI=mongodb://root:password@mongo:27017/
+      - WATCHPACK_POLLING=true
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - mongo

@@ -23,7 +23,7 @@ async function main() {
         // JSONファイルからデータを読み取り
         const jsonData = fs.readFileSync(jsonFilePath, 'utf8');
         const data = JSON.parse(jsonData);
-        data._id = package_name;
+        // data._id = package_name;
 
         // データを挿入
         const result = await collection.insertOne(data);

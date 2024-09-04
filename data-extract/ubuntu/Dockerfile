@@ -16,13 +16,13 @@ RUN apt-get update && \
     apt list 2>/dev/null > packages.txt
 
 # packageのソースコードを取得するための設定
-RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
-    sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
+RUN cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources~ && \
+    sed -Ei 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources  && \
     apt-get update
 
 # ローカルファイルをコピー
 COPY input.txt /tmp/
-COPY test.sh /tmp/
+COPY *.sh /tmp/
 COPY *.js /tmp/
 COPY package.json /tmp/
 

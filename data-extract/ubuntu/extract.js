@@ -17,7 +17,7 @@ const KEYS_SPLIT_COMMA = [
   'Built-Using'
 ];
 
-const addData = (currentPackage, key, value, package_flag, package_number) => {
+const insertData = (currentPackage, key, value, package_flag, package_number) => {
   if (package_flag) {
     currentPackage.Package[package_number][key] = value;
   } else {
@@ -25,20 +25,29 @@ const addData = (currentPackage, key, value, package_flag, package_number) => {
   }
 }
 
-const separateNameAndVersion = (values) => {
+const addData = (currentPackage, addDataKey ,key, value) => {
+  currentPackage[addDataKey] = {
+    ...currentPackage[addDataKey],
+    [key]: value,
+  }
+}
+
+const separateName_Version_Operator = (values) => {
   const output = [];
 
   for (let i = 0; i < values.length; i++) {
     if (values[i].includes('(')) {
       const [name, tmp] = values[i].split('(').map(v => v.trim());
-      const version = tmp.replace(')', '');
+      const [operator, version] = tmp.replace(')', '').split(' ').map(v => v.trim());
       output.push({
         Name: name,
+        Operator: operator,
         Version: version
       });
     } else {
       output.push({
         Name: values[i],
+        Operator: null,
         Version: null
       });
     }
@@ -47,7 +56,7 @@ const separateNameAndVersion = (values) => {
   return output;
 }
 
-const parseControlFile = (controlFileContent) => {
+const parseControlFile = (controlFileContent, package_name) => {
   const lines = controlFileContent.split('\n');
 
   let previousKey = '';
@@ -57,13 +66,15 @@ const parseControlFile = (controlFileContent) => {
   };
   let values = [];
   let currentPackage = {};
-  let package_counter = 1;
   let package_flag = false;
+  let package_counter = 1;
+
+  insertData(currentPackage, 'Name', package_name, package_flag, `package${package_counter}`);
 
   for (let i = 0; i < lines.length; i++) {
     if (lines[i] === '') {
       if (previousKey === 'Description') {
-        addData(currentPackage, previousKey, {
+        insertData(currentPackage, previousKey, {
           summary: description_values.summary,
           detail: description_values.detail
         }, package_flag, `package${package_counter}`);
@@ -84,7 +95,7 @@ const parseControlFile = (controlFileContent) => {
     const [key, value] = line.split(': ').map(part => part.trim());
     if (value) {
       if (previousKey === 'Description') {
-        addData(currentPackage, previousKey, {
+        insertData(currentPackage, previousKey, {
           summary: description_values.summary,
           detail: description_values.detail
         }, package_flag, `package${package_counter}`);
@@ -95,8 +106,8 @@ const parseControlFile = (controlFileContent) => {
         };
       } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(previousKey)
         || KEYS_SPLIT_COMMA.includes(previousKey)) {
-          const out = separateNameAndVersion(values);
-          addData(currentPackage, previousKey, out, package_flag, `package${package_counter}`);
+          const out = separateName_Version_Operator(values);
+          insertData(currentPackage, previousKey, out, package_flag, `package${package_counter}`);
           previousKey = '';
           values = [];
       }
@@ -104,10 +115,14 @@ const parseControlFile = (controlFileContent) => {
       if (key === 'Maintainer' || key === 'Uploaders') {
         const [name, remain] = value.split(' <');
         const email = remain.split('>')[0];
-        addData(currentPackage, key, {
+        insertData(currentPackage, key, {
           Maintainer: name,
           Email: email
         }, package_flag, `package${package_counter}`);
+      } else if (key == 'Homepage' || key.includes('Vcs')) {
+        addData(currentPackage, 'URL', key, value);
+      } else if (key.includes('Version')) {
+        addData(currentPackage, 'Version', key, value);
       } else if (key === 'Description') {
         previousKey = key;
         description_values = {
@@ -120,7 +135,7 @@ const parseControlFile = (controlFileContent) => {
         }
         currentPackage.Package[`package${package_counter}`] = {}
         package_flag = true;
-        addData(currentPackage, 'PackageName', value, package_flag, `package${package_counter}`);
+        insertData(currentPackage, 'Name', value, package_flag, `package${package_counter}`);
       } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(key)) {
         previousKey = key;
         const no_comma_value = value.split(',').map(cv => cv.trim());
@@ -143,7 +158,7 @@ const parseControlFile = (controlFileContent) => {
           }
         });
       } else {
-        addData(currentPackage, key, value, package_flag, `package${package_counter}`);
+        insertData(currentPackage, key, value, package_flag, `package${package_counter}`);
       }
     } else {
       if (previousKey === 'Description') {
@@ -175,7 +190,7 @@ const parseControlFile = (controlFileContent) => {
   }
 
   if (previousKey === 'Description') {
-    addData(currentPackage, previousKey, {
+    insertData(currentPackage, previousKey, {
       summary: description_values.summary,
       detail: description_values.detail
     }, package_flag, `package${package_counter}`);
@@ -189,8 +204,8 @@ const parseControlFile = (controlFileContent) => {
   return currentPackage;
 }
 
-const convertToJSON = (controlFileContent) => {
-  const packages = parseControlFile(controlFileContent);
+const convertToJSON = (controlFileContent, package_name) => {
+  const packages = parseControlFile(controlFileContent, package_name);
   return packages;
 }
 

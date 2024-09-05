@@ -119,7 +119,7 @@ const parseControlFile = (controlFileContent, package_name) => {
           Maintainer: name,
           Email: email
         }, package_flag, `package${package_counter}`);
-      } else if (key == 'Homepage' || key.includes('Vcs')) {
+      } else if (key == 'Homepage' || key.includes('Vcs') || key === 'Bugs') {
         addData(currentPackage, 'URL', key, value);
       } else if (key.includes('Version')) {
         addData(currentPackage, 'Version', key, value);

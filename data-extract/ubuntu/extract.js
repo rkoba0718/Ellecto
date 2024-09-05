@@ -23,14 +23,14 @@ const insertData = (currentPackage, key, value, package_flag, package_number) =>
   } else {
     currentPackage[key] = value;
   }
-}
+};
 
 const addData = (currentPackage, addDataKey ,key, value) => {
   currentPackage[addDataKey] = {
     ...currentPackage[addDataKey],
     [key]: value,
   }
-}
+};
 
 const separateName_Version_Operator = (values) => {
   const output = [];
@@ -54,6 +54,47 @@ const separateName_Version_Operator = (values) => {
   }
 
   return output;
+};
+
+const insertAndInitDescriptionData = (
+  currentPackage,
+  previousKey,
+  description_values,
+  package_flag,
+  package_counter
+) => {
+  insertData(currentPackage, previousKey, {
+    summary: description_values.summary,
+    detail: description_values.detail
+  }, package_flag, `package${package_counter}`);
+  previousKey = '';
+  description_values = {
+    summary: '',
+    detail: ''
+  };
+};
+
+const pushValuesAfterSplitCommaAndPipe = (value, values) => {
+  const no_comma_value = value.split(',').map(cv => cv.trim());
+  no_comma_value.map(v => {
+    if (v.includes('|')) {
+      const no_pipe_value = v.split('|').map(pv => pv.trim());
+      for (let i = 0; i < no_pipe_value.length; i++) {
+        values.push(no_pipe_value[i]);
+      }
+    } else if (v !== '') {
+      values.push(v);
+    }
+  });
+};
+
+const pushValuesAfterSplitComma = (value, values) => {
+  const no_comma_value = value.split(',').map(cv => cv.trim());
+  no_comma_value.map(v => {
+    if (v !== '') {
+      values.push(v);
+    }
+  });
 }
 
 const parseControlFile = (controlFileContent, package_name) => {
@@ -74,15 +115,13 @@ const parseControlFile = (controlFileContent, package_name) => {
   for (let i = 0; i < lines.length; i++) {
     if (lines[i] === '') {
       if (previousKey === 'Description') {
-        insertData(currentPackage, previousKey, {
-          summary: description_values.summary,
-          detail: description_values.detail
-        }, package_flag, `package${package_counter}`);
-        previousKey = '';
-        description_values = {
-          summary: '',
-          detail: ''
-        };
+        insertAndInitDescriptionData(
+          currentPackage,
+          previousKey,
+          description_values,
+          package_flag,
+          package_counter
+        );
       }
       if (package_flag) {
         package_counter++;
@@ -95,15 +134,13 @@ const parseControlFile = (controlFileContent, package_name) => {
     const [key, value] = line.split(': ').map(part => part.trim());
     if (value) {
       if (previousKey === 'Description') {
-        insertData(currentPackage, previousKey, {
-          summary: description_values.summary,
-          detail: description_values.detail
-        }, package_flag, `package${package_counter}`);
-        previousKey = '';
-        description_values = {
-          summary: '',
-          detail: ''
-        };
+        insertAndInitDescriptionData(
+          currentPackage,
+          previousKey,
+          description_values,
+          package_flag,
+          package_counter
+        );
       } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(previousKey)
         || KEYS_SPLIT_COMMA.includes(previousKey)) {
           const out = separateName_Version_Operator(values);
@@ -138,25 +175,10 @@ const parseControlFile = (controlFileContent, package_name) => {
         insertData(currentPackage, 'Name', value, package_flag, `package${package_counter}`);
       } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(key)) {
         previousKey = key;
-        const no_comma_value = value.split(',').map(cv => cv.trim());
-        no_comma_value.map(v => {
-          if (v.includes('|')) {
-            const no_pipe_value = v.split('|').map(pv => pv.trim());
-            for (let i = 0; i < no_pipe_value.length; i++) {
-              values.push(no_pipe_value[i]);
-            }
-          } else if (v !== '') {
-            values.push(v);
-          }
-        });
+        pushValuesAfterSplitCommaAndPipe(value, values);
       } else if (KEYS_SPLIT_COMMA.includes(key)) {
         previousKey = key;
-        const no_comma_value = value.split(',').map(cv => cv.trim());
-        no_comma_value.map(v => {
-          if (v !== '') {
-            values.push(v);
-          }
-        });
+        pushValuesAfterSplitComma(value, values);
       } else {
         insertData(currentPackage, key, value, package_flag, `package${package_counter}`);
       }
@@ -167,38 +189,21 @@ const parseControlFile = (controlFileContent, package_name) => {
           detail: `${description_values.detail} ${key}`
         };
       } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(previousKey)) {
-        const no_comma_value = key.split(',').map(cv => cv.trim());
-        no_comma_value.map(v => {
-          if (v.includes('|')) {
-            const no_pipe_value = v.split('|').map(pv => pv.trim());
-            for (let i = 0; i < no_pipe_value.length; i++) {
-              values.push(no_pipe_value[i]);
-            }
-          } else if (v !== '') {
-            values.push(v);
-          }
-        });
+        pushValuesAfterSplitCommaAndPipe(key, values);
       } else if (KEYS_SPLIT_COMMA.includes(previousKey)) {
-        const no_comma_value = key.split(',').map(cv => cv.trim());
-        no_comma_value.map(v => {
-          if (v !== '') {
-            values.push(v);
-          }
-        });
+        pushValuesAfterSplitComma(key, values);
       }
     }
   }
 
   if (previousKey === 'Description') {
-    insertData(currentPackage, previousKey, {
-      summary: description_values.summary,
-      detail: description_values.detail
-    }, package_flag, `package${package_counter}`);
-    previousKey = '';
-    description_values = {
-      summary: '',
-      detail: ''
-    };
+    insertAndInitDescriptionData(
+      currentPackage,
+      previousKey,
+      description_values,
+      package_flag,
+      package_counter
+    );
   }
 
   return currentPackage;

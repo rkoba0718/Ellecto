@@ -149,7 +149,7 @@ const parseControlFile = (controlFileContent, package_name) => {
           values = [];
       }
 
-      if (key === 'Maintainer' || key === 'Uploaders') {
+      if (key.includes('Maintainer') || key === 'Uploaders') {
         const [name, remain] = value.split(' <');
         const email = remain.split('>')[0];
         insertData(currentPackage, key, {

@@ -28,5 +28,8 @@ Inputs/*
 # Result Files #
 Results/*
 
+# test Files #
+*test*
+
 target/
 bin/

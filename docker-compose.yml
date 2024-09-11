@@ -28,9 +28,13 @@ services:
   ubuntu-data-extract:
     build: data-extract/ubuntu
     tty: true
-  crosssim-fine-tuining:
+    volumes:
+      - ./shared-data:/shared
+  crosssim:
     build: similarity-model/
     tty: true
+    volumes:
+      - ./shared-data:/shared
   visualize-tool:
     image: node:18.17.1
     working_dir: /app

@@ -15,3 +15,7 @@ do
         node dbimport.js controlDatas/$PACKAGE_NAME.json;
     fi
 done < packages.txt
+node createCrossSimInputFiles.js;
+cp RepositoryList.txt /shared/;
+cp Dictionary.txt /shared/;
+cp Graph.txt /shared/;

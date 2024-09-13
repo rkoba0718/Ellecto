@@ -1,3 +1,4 @@
+cp ../packages.txt ./;
 mkdir controlDatas;
 while IFS= read -r line;
 do

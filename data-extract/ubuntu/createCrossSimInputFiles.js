@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 
 const url = 'mongodb://root:password@ossprojectmap-mongo-1:27017';
 // const url = 'mongodb://root:password@localhost:27017'; // For debug
-const dbName = 'testDB';
+const dbName = 'testDB'; // For debug
 const collectionName = 'ubuntu';
 
 const KEYS_HAVE_ONE_ELEMENT = [

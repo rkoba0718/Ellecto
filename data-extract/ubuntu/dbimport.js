@@ -2,7 +2,8 @@ const fs = require('fs');
 const { MongoClient } = require('mongodb');
 
 const url = 'mongodb://root:password@ossprojectmap-mongo-1:27017';
-const dbName = 'testDB';
+const dbName = 'testDB'; // For debug
+const collectionName = 'ubuntu';
 
 const jsonFilePath = process.argv[2];
 
@@ -18,7 +19,7 @@ async function main() {
 
         // データベースとコレクションを取得
         const db = client.db(dbName);
-        const collection = db.collection('ubuntu');
+        const collection = db.collection(collectionName);
 
         // JSONファイルからデータを読み取り
         const jsonData = fs.readFileSync(jsonFilePath, 'utf8');

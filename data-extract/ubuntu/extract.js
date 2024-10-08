@@ -39,17 +39,21 @@ const separateName_Version_Operator = (values) => {
     if (values[i].includes('(')) {
       const [name, tmp] = values[i].split('(').map(v => v.trim());
       const [operator, version] = tmp.replace(')', '').split(' ').map(v => v.trim());
-      output.push({
-        Name: name,
-        Operator: operator,
-        Version: version
-      });
+      if (name !== '') {
+        output.push({
+          Name: name,
+          Operator: operator,
+          Version: version
+        });
+      }
     } else {
-      output.push({
-        Name: values[i],
-        Operator: null,
-        Version: null
-      });
+      if (values[i] !== '') {
+        output.push({
+          Name: values[i],
+          Operator: null,
+          Version: null
+        });
+      }
     }
   }
 
@@ -127,6 +131,8 @@ const parseControlFile = (controlFileContent, package_name) => {
         package_counter++;
       }
       package_flag = false;
+      continue;
+    } else if (lines[i].startsWith(`#`)) {
       continue;
     }
 

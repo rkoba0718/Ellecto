@@ -11,6 +11,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - &&\
     nodejs \
     dpkg-dev
 
+# 言語の割合を計算するclocコマンドをインストールする
+RUN apt-get install -y cloc
+
 # ubuntuのpackage listを取得する
 RUN apt-get update && \
     apt list 2>/dev/null > packages.txt

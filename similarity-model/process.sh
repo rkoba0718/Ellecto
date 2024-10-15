@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cd Inputs;
 rm -rf *;
 cd ..;

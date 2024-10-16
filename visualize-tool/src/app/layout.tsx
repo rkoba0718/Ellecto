@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import HeaderContainer from "./(components)/containers/Header";
 import FooterContainer from "./(components)/containers/Footer";
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import "./styles/globals.css";
 
+config.autoAddCss = false; // FontAwesome の CSS オートマウントを無効化
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

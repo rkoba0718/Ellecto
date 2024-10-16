@@ -5,7 +5,7 @@ import { faInfoCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default function Header() {
     return (
-        <header className="bg-green-500 text-white shadow-md">
+        <header className="bg-green-700 text-white shadow-md">
             <nav className="container mx-auto py-2 flex justify-between items-center">
                 <div className="text-lg font-bold">
                     <a href="/" className="hover:text-gray-200">ProjSelector</a>

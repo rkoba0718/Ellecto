@@ -138,8 +138,8 @@ async function extractLicenseInfo(sourceDir) {
         }
     }
 
-    const lowerLincenseInfo = licenseInfo.toLowerCase();
-    const insertLicense = licenseMapping[lowerLincenseInfo] === undefined ? licenseInfo : licenseMapping[lowerLincenseInfo];
+    const lowerLicenseInfo = licenseInfo.toLowerCase();
+    const insertLicense = licenseMapping[lowerLicenseInfo] === undefined ? licenseInfo : licenseMapping[lowerLicenseInfo];
     const output = versionInfo === '' ? insertLicense : `${insertLicense}-${versionInfo}`;
     return output;
 }

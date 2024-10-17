@@ -13,13 +13,14 @@
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "mongodb": "^6.9.0",
     "next": "14.2.7",
     "react": "^18",
     "react-dom": "^18",
     "recoil": "^0.7.7"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.16.12",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

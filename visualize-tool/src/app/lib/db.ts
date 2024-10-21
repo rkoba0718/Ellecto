@@ -22,10 +22,10 @@ export async function searchProjects(searchTerm: string, language: string, licen
         query.name = { $regex: searchTerm, $options: 'i' }; // キーワード検索
     }
     if (language) {
-        query.language = language;
+        query.Language = language;
     }
     if (license) {
-        query.license = license;
+        query.License = license;
     }
 
     // クエリの実行

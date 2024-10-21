@@ -3,10 +3,10 @@ import { ObjectId } from "mongodb";
 export type ProjectInfo = {
     _id: ObjectId;
     Name: string;
-    language: {
+    Language: {
         [key: string]: string;
     };
-    license: string;
+    License: string;
     Maintainer: {
         Maintainer: string;
         Email: string;

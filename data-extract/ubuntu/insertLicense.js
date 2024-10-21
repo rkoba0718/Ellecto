@@ -164,7 +164,7 @@ async function updateLicenseInDB(packageName, licenseInfo) {
         // データベースをアップデート
         const update = {
             $set: {
-                license: licenseInfo
+                License: licenseInfo
             }
         };
 

@@ -35,7 +35,7 @@ const calculateLanguagePercentage = (languageData) => {
 
     languagePercentages.forEach((item, index) => {
         if (index < 3) {
-            result[`lang${index + 1}`] = `${item.language} ${item.percentage}%`;
+            result[`Lang${index + 1}`] = `${item.language} ${item.percentage}%`;
         } else {
             otherPercentage += item.percentage;
         }
@@ -67,7 +67,7 @@ async function insertLanguageInDB(packageName, languagePercentages) {
         // データベースをアップデート
         const update = {
             $set: {
-                language: languagePercentages
+                Language: languagePercentages
             }
         };
 

@@ -1,10 +1,11 @@
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 
-const url = 'mongodb://root:password@oss-project-map-mongo-1:27017';
+// const url = 'mongodb://root:password@oss-project-map-mongo-1:27017'; // For production environment
+const url = 'mongodb://root:password@ossprojectmap-mongo-1:27017'; // For Test environment
 // const url = 'mongodb://root:password@localhost:27017'; // For debug
-const dbName = 'ProjSelector';
-// const dbName = 'testDB'; // For debug
+// const dbName = 'ProjSelector';
+const dbName = 'testDB'; // For Test environment
 const collectionName = 'ubuntu';
 
 async function main() {

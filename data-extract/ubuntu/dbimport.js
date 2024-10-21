@@ -1,9 +1,10 @@
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
 
-const url = 'mongodb://root:password@oss-project-map-mongo-1:27017';
-const dbName = 'ProjSelector';
-// const dbName = 'testDB'; // For debug
+// const url = 'mongodb://root:password@oss-project-map-mongo-1:27017'; // For production environment
+const url = 'mongodb://root:password@ossprojectmap-mongo-1:27017'; // For Test environment
+// const dbName = 'ProjSelector';
+const dbName = 'testDB'; // For Test environment
 const collectionName = 'ubuntu';
 
 const jsonFilePath = process.argv[2];

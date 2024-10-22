@@ -19,10 +19,10 @@ export async function searchProjects(searchTerm: string, language: string, licen
     const query: any = {};
     if (searchTerm) {
         // TODO: 検索ロジック
-        query.name = { $regex: searchTerm, $options: 'i' }; // キーワード検索
+        query.Name = { $regex: searchTerm, $options: 'i' }; // キーワード検索
     }
     if (language) {
-        query.Language = language;
+        query.Language['Lang1'] = language;
     }
     if (license) {
         query.License = license;

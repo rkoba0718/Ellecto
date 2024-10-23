@@ -15,6 +15,11 @@ const SearchFormContainer: React.FC = () => {
     const [showOptions, setShowOptions] = React.useState(false);
     const [result, setResult] = useRecoilState(searchResultState);
 
+    // 各検索条件の重み
+    const [searchTermWeight, setSearchTermWeight] = useState(1);
+    const [languageWeight, setLanguageWeight] = useState(1);
+    const [licenseWeight, setLicenseWeight] = useState(1);
+
     const handleSearchSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (searchTerm === '') {
@@ -25,7 +30,16 @@ const SearchFormContainer: React.FC = () => {
             const response = await fetch('/api/search', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ searchTerm, language, license })
+                body: JSON.stringify({
+                    searchTerm,
+                    language,
+                    license,
+                    weight: {
+                        searchTerm: searchTermWeight,
+                        language: languageWeight,
+                        license: licenseWeight
+                    }
+                })
             });
             const data = await response.json();
             setResult(data);
@@ -51,6 +65,12 @@ const SearchFormContainer: React.FC = () => {
             setLicense={setLicense}
             showOptions={showOptions}
             onToggleOptionsClick={onToggleOptionsClick}
+            searchTermWeight={searchTermWeight}
+            setSearchTermWeight={setSearchTermWeight}
+            languageWeight={languageWeight}
+            setLanguageWeight={setLanguageWeight}
+            licenseWeight={licenseWeight}
+            setLicenseWeight={setLicenseWeight}
         />
     )
 };

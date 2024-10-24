@@ -4,6 +4,7 @@ import React from "react";
 
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 import SearchResult from "../../../presentationals/projects/SearchResult";
+import NoResultMessage from "../../../presentationals/projects/NoResultMessage";
 
 type SearchResultContainerProps = {
     result: ProjectInfo[];
@@ -14,9 +15,15 @@ const SearchResultContainer: React.FC<SearchResultContainerProps> = ({
 }) => {
 
     return (
-        <SearchResult
-            result={result}
-        />
+        <>
+            {result.length === 0 ? (
+                <NoResultMessage />
+            ) : (
+                <SearchResult
+                    result={result}
+                />
+            )}
+        </>
     )
 };
 

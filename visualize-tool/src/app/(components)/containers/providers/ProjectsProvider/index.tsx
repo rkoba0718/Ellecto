@@ -13,38 +13,70 @@ type ProjectsProviderProps = {
     result: ProjectInfo[],
     currentPage: number,
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
-    totalProjects: number
+    totalProjects: number,
+    applyFiltersAndSort: (filters: { license: string; language: string }, sort: string) => void
   ) => React.ReactNode;
 };
 
 const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
-    const result = useRecoilValue(searchResultState);
-    const [currentPage, setCurrentPage] = useState(1);
+  const result = useRecoilValue(searchResultState);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredResult, setFilteredResult] = useState<ProjectInfo[]>(result);
+  const [sort, setSort] = useState('relevance');
+  const [filters, setFilters] = useState({ license: '', language: '' });
+  const navigation = useRouter();
 
-    const startIndex = (currentPage - 1) * projectsPerPage;
-    const currentResult = result.slice(startIndex, startIndex + projectsPerPage);
+  // フィルタとソートの適用
+  const applyFiltersAndSort: (filters: { license: string; language: string }, sort: string) => void = (filters: { license: string; language: string }, sort: string) => {
+    const filtered = result
+      .filter(project =>
+        (filters.license ? project.License.toLowerCase().includes(filters.license.toLowerCase()) : true) &&
+        (filters.language
+          ? (
+            project.Language.Lang1.toLowerCase().includes(filters.language.toLowerCase()) ||
+            project.Description.summary.toLowerCase().includes(filters.language.toLowerCase()) ||
+            project.Description.detail.toLowerCase().includes(filters.language.toLowerCase())
+          )
+          : true
+        )
+      )
+      .sort((a, b) => {
+          if (sort === 'name') return a.Name.localeCompare(b.Name);
+          return b.score - a.score; // Relevance（デフォルト）
+      });
 
-    const navigation = useRouter();
+    setFilteredResult(filtered);
+    setCurrentPage(1); // フィルタ・ソート変更時にページを1にリセット
+  };
 
-    // TODO: URL処理，戻るボタンで値の切り替え
-    // URLからクエリパラメータを取得し、初期ページを設定
-    // useEffect(() => {
-    //   const params = new URLSearchParams(window.location.search);
-    //   const skip = params.get('skip');
+  // 初期表示でフィルタリングとソートを適用
+  useEffect(() => {
+    applyFiltersAndSort(filters, sort);
+  }, [filters, sort, result]);
 
-    //   if (skip && !isNaN(Number(skip))) {
-    //     const newPage = Math.ceil(Number(skip) / projectsPerPage);
-    //     setCurrentPage(newPage);
-    //   }
-    // }, []);
 
-    // ページが変わるときにURLのクエリパラメータを更新
-    useEffect(() => {
-      const skip = (currentPage - 1) * projectsPerPage;
-      navigation.push(`/projects?skip=${skip}`);
-    }, [currentPage, navigation]);
+  const startIndex = (currentPage - 1) * projectsPerPage;
+  const currentResult = filteredResult.slice(startIndex, startIndex + projectsPerPage);
 
-    return <>{children(currentResult, currentPage, setCurrentPage, result.length)}</>
+  // TODO: URL処理，戻るボタンで値の切り替え
+  // URLからクエリパラメータを取得し、初期ページを設定
+  // useEffect(() => {
+  //   const params = new URLSearchParams(window.location.search);
+  //   const skip = params.get('skip');
+
+  //   if (skip && !isNaN(Number(skip))) {
+  //     const newPage = Math.ceil(Number(skip) / projectsPerPage);
+  //     setCurrentPage(newPage);
+  //   }
+  // }, []);
+
+  // ページが変わるときにURLのクエリパラメータを更新
+  useEffect(() => {
+    const skip = (currentPage - 1) * projectsPerPage;
+    navigation.push(`/projects?skip=${skip}`);
+  }, [currentPage, navigation]);
+
+  return <>{children(currentResult, currentPage, setCurrentPage, filteredResult.length, applyFiltersAndSort)}</>
 };
 
 export default ProjectsProvider;

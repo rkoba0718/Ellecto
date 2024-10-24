@@ -4,9 +4,9 @@ import { searchProjects } from "@/app/lib/db";
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { searchTerm, language, license } = body;
+        const { searchTerm, language, license, weight } = body;
 
-        const results = await searchProjects(searchTerm, language, license);
+        const results = await searchProjects(searchTerm, language, license, weight);
         return NextResponse.json(results, { status: 200 });
     } catch (error) {
         // TODO: エラー処理

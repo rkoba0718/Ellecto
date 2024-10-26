@@ -4,12 +4,18 @@ export type ProjectInfo = {
     _id: ObjectId;
     Name: string;
     Language: {
-        [key: string]: string;
+        [key: string]: {
+            Name: string;
+            Percentage: string;
+        };
     };
+    LOC: number;
     License: string;
-    Maintainer: {
-        Maintainer: string;
-        Email: string;
+    Maintainers: {
+        [key: string]: {
+            Name: string;
+            Email: string
+        };
     };
     Description: {
         summary: string;

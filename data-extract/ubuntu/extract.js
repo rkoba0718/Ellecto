@@ -204,7 +204,7 @@ const parseControlFile = (controlFileContent, package_name) => {
     }
 
     const line = lines[i];
-    const [key, value] = line.split(': ').map(part => part.trim());
+    const [key, value] = line.split(':').map(part => part.trim());
     if (KEYS.includes(key.toLowerCase())) {
       // 複数行に渡って書かれる可能性のあるデータを以前のキーに従って値を保存
       if (previousKey === 'Description') {

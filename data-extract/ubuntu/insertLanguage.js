@@ -8,6 +8,7 @@ const dbName = 'testDB'; // For Test environment
 const collectionName = 'ubuntu';
 
 const calculateLanguagePercentage = (languageData) => {
+    const loc = languageData.SUM.code;
     const languages = [];
 
     // 言語ごとのコード行数を取り出す．headerとSUMは除外
@@ -35,7 +36,10 @@ const calculateLanguagePercentage = (languageData) => {
 
     languagePercentages.forEach((item, index) => {
         if (index < 3) {
-            result[`Lang${index + 1}`] = `${item.language} ${item.percentage}%`;
+            result[`Lang${index + 1}`] = {
+                Name: item.language,
+                Percentage: `${item.percentage}%`
+            };
         } else {
             otherPercentage += item.percentage;
         }
@@ -43,13 +47,16 @@ const calculateLanguagePercentage = (languageData) => {
 
     // "Other" の割合を追加（上位3つ以外がある場合）
     if (otherPercentage > 0) {
-        result.other = `Other ${otherPercentage.toFixed(2)}%`;
+        result.other = {
+            Name: 'Other',
+            Percentage: `${otherPercentage.toFixed(2)}%`
+        };
     }
 
-    return result;
+    return [result, loc];
 };
 
-async function insertLanguageInDB(packageName, languagePercentages) {
+async function insertLanguageInDB(packageName, languagePercentages, loc) {
     const client = new MongoClient(url);
 
     try {
@@ -67,7 +74,8 @@ async function insertLanguageInDB(packageName, languagePercentages) {
         // データベースをアップデート
         const update = {
             $set: {
-                Language: languagePercentages
+                Language: languagePercentages,
+                LOC: loc
             }
         };
 
@@ -97,8 +105,8 @@ async function main() {
 
     try {
         const languageData = JSON.parse(clocOutput);
-        const result = calculateLanguagePercentage(languageData);
-        await insertLanguageInDB(packageName, result);
+        const [result, loc] = calculateLanguagePercentage(languageData);
+        await insertLanguageInDB(packageName, result, loc);
     } catch (error) {
         console.error('Error parsing JSON data:', error);
         process.exit(1);

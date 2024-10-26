@@ -33,7 +33,7 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
         (filters.license ? project.License.toLowerCase().includes(filters.license.toLowerCase()) : true) &&
         (filters.language
           ? (
-            project.Language.Lang1.toLowerCase().includes(filters.language.toLowerCase()) ||
+            project.Language.Lang1.Name.toLowerCase().includes(filters.language.toLowerCase()) ||
             project.Description.summary.toLowerCase().includes(filters.language.toLowerCase()) ||
             project.Description.detail.toLowerCase().includes(filters.language.toLowerCase())
           )

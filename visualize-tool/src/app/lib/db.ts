@@ -37,7 +37,7 @@ export async function searchProjects(searchTerm: string, language: string, licen
                     $or: [
                         { 'Description.summary': { $regex: escapeRegExp(lang), $options: 'i' } },
                         { 'Description.detail': { $regex: escapeRegExp(lang), $options: 'i' } },
-                        { 'Language.Lang1': { $regex: escapeRegExp(lang), $options: 'i' } }
+                        { 'Language.Lang1.Name': { $regex: escapeRegExp(lang), $options: 'i' } }
                     ]
                 }))
                 : [];
@@ -76,7 +76,7 @@ export async function searchProjects(searchTerm: string, language: string, licen
                 const escapeLang = escapeRegExp(lang);
                 if (new RegExp(escapeLang, 'i').test(project.Description['summary'])) score += weight.language * 1;
                 if (new RegExp(escapeLang, 'i').test(project.Description['detail'])) score += weight.language * 1;
-                if (new RegExp(escapeLang, 'i').test(project.Language['Lang1'])) score += weight.language * 1;
+                if (new RegExp(escapeLang, 'i').test(project.Language.Lang1.Name)) score += weight.language * 1;
             })
         }
 

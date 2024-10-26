@@ -1,23 +1,65 @@
 const fs = require('fs');
 
-const KEYS_SPLIT_COMMA_OR_PIPE = [
-  'Depends',
-  'Pre-Depends',
-  'Build-Depends',
-  'Recommends',
-  'Suggests',
+const KEYS = [
+	'package',
+	'version',
+	'standards-version',
+	'maintainer',
+	'uploaders',
+	'xsbc-original-maintainer',
+	'description',
+	'section',
+	'priority',
+	'essential',
+	'architecture',
+	'origin',
+	'bugs',
+	'homepage',
+	'vcs-browser',
+	'vcs-git',
+	'tag',
+	'multi-arch',
+	'source',
+	'subarchitecture',
+	'kernel-version',
+	'installer-menu-item',
+	'depends',
+	'pre-depends',
+	'build-depends',
+	'recommends',
+	'suggests',
+	'breaks',
+	'conflicts',
+	'replaces',
+	'provides',
+	'built-using',
+	'rules-requires-root',
+	'testsuite',
 ];
 
-const KEYS_SPLIT_COMMA = [
-  'Tag',
-  'Breaks',
-  'Conflicts',
-  'Replaces',
-  'Provides',
-  'Built-Using'
+const KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE = [
+  'depends',
+  'pre-depends',
+  'build-depends',
+  'recommends',
+  'suggests',
+];
+
+const KEYS_WHICH_VALUES_SPLIT_COMMA = [
+  'tag',
+  'breaks',
+  'conflicts',
+  'replaces',
+  'provides',
+  'built-using'
 ];
 
 const insertData = (currentPackage, key, value, package_flag, package_number) => {
+  // valueが空の場合はreturn
+  if (value === '') {
+    return
+  };
+
   if (package_flag) {
     currentPackage.Package[package_number][key] = value;
   } else {
@@ -26,56 +68,70 @@ const insertData = (currentPackage, key, value, package_flag, package_number) =>
 };
 
 const addData = (currentPackage, addDataKey ,key, value) => {
+  // valueが空の場合はreturn
+  if (value === '') {
+    return
+  };
+
   currentPackage[addDataKey] = {
     ...currentPackage[addDataKey],
     [key]: value,
   }
 };
 
-const separateName_Version_Operator = (values) => {
+const separateName_Version_Operator_Architecture = (values) => {
   const output = [];
 
   for (let i = 0; i < values.length; i++) {
-    if (values[i].includes('(')) {
-      const [name, tmp] = values[i].split('(').map(v => v.trim());
+    const value = values[i];
+    if (value.includes('(') && value.includes('[')) { // ()と[]によって，VersionとArchitectureが与えられている場合の処理
+      const [name, remain] = value.split('(').map(v => v.trim());
+      const [operator_and_version, tmp] = remain.split(')').map(v => v.trim());
+      const [operator, version] = operator_and_version.split(' ').map(v => v.trim());
+      const architecture = tmp.replace('[', '').replace(']', '').trim();
+      if (name !== '') {
+        output.push({
+          Name: name,
+          Operator: operator,
+          Version: version,
+          Architecture: architecture
+        });
+      }
+    } else if (value.includes('(')) { // ()によって，Versionのみが与えられている場合の処理
+      const [name, tmp] = value.split('(').map(v => v.trim());
       const [operator, version] = tmp.replace(')', '').split(' ').map(v => v.trim());
       if (name !== '') {
         output.push({
           Name: name,
           Operator: operator,
-          Version: version
+          Version: version,
+          Architecture: null
         });
       }
-    } else {
-      if (values[i] !== '') {
+    } else if (value.includes('[')) { // []によって，Architectureのみが与えられている場合の処理
+      const [name, tmp] = value.split('[').map(v => v.trim());
+      const architecture = tmp.replace(']', '').trim();
+      if (name !== '') {
         output.push({
-          Name: values[i],
+          Name: name,
           Operator: null,
-          Version: null
+          Version: null,
+          Architecture: architecture
+        });
+      }
+    } else { // ()や[]がない時 = nameだけの場合の処理
+      if (value !== '') {
+        output.push({
+          Name: value,
+          Operator: null,
+          Version: null,
+          Architecture: null
         });
       }
     }
   }
 
   return output;
-};
-
-const insertAndInitDescriptionData = (
-  currentPackage,
-  previousKey,
-  description_values,
-  package_flag,
-  package_counter
-) => {
-  insertData(currentPackage, previousKey, {
-    summary: description_values.summary,
-    detail: description_values.detail
-  }, package_flag, `package${package_counter}`);
-  previousKey = '';
-  description_values = {
-    summary: '',
-    detail: ''
-  };
 };
 
 const pushValuesAfterSplitCommaAndPipe = (value, values) => {
@@ -99,57 +155,71 @@ const pushValuesAfterSplitComma = (value, values) => {
       values.push(v);
     }
   });
-}
+};
 
 const parseControlFile = (controlFileContent, package_name) => {
-  const lines = controlFileContent.split('\n');
+  const addNewLineFileContent = `${controlFileContent}\n`; // controlファイルの末尾に改行を加える→ファイルごとの違い（最終行が空行かどうか）を必ず空行があるように揃える
+  const lines = addNewLineFileContent.split('\n');
 
   let previousKey = '';
   let description_values = {
     summary: '',
     detail: ''
   };
-  let values = [];
+  let values = []; // ','や'|'で区切られた複数の値をまとめて管理する配列
   let currentPackage = {};
-  let package_flag = false;
-  let package_counter = 1;
+  let package_flag = false; // バイナリパッケージの情報を扱っているかを管理するフラグ
+  let package_counter = 1; // 何番目のバイナリパッケージであるかをカウントする自然数
 
   insertData(currentPackage, 'Name', package_name, package_flag, `package${package_counter}`);
 
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i] === '') {
-      if (previousKey === 'Description') {
-        insertAndInitDescriptionData(
-          currentPackage,
-          previousKey,
-          description_values,
-          package_flag,
-          package_counter
-        );
+    if (lines[i] === '') { // 空行を読み込んだ時の処理
+      if (previousKey !== '') {
+        if (previousKey === 'Description') {
+          insertData(currentPackage, previousKey, {
+            summary: description_values.summary,
+            detail: description_values.detail
+          }, package_flag, `package${package_counter}`);
+          previousKey = '';
+          description_values = {
+            summary: '',
+            detail: ''
+          };
+        } else if (KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE.includes(previousKey.toLowerCase())
+          || KEYS_WHICH_VALUES_SPLIT_COMMA.includes(previousKey.toLowerCase())) {
+            const out = separateName_Version_Operator_Architecture(values);
+            insertData(currentPackage, previousKey, out, package_flag, `package${package_counter}`);
+            previousKey = '';
+            values = [];
+        }
       }
       if (package_flag) {
         package_counter++;
       }
       package_flag = false;
       continue;
-    } else if (lines[i].startsWith(`#`)) {
+    } else if (lines[i].startsWith(`#`)) { // コメント行を読み込んだ時の処理
       continue;
     }
 
     const line = lines[i];
     const [key, value] = line.split(': ').map(part => part.trim());
-    if (value) {
+    if (KEYS.includes(key.toLowerCase())) {
+      // 複数行に渡って書かれる可能性のあるデータを以前のキーに従って値を保存
       if (previousKey === 'Description') {
-        insertAndInitDescriptionData(
-          currentPackage,
-          previousKey,
-          description_values,
-          package_flag,
-          package_counter
-        );
-      } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(previousKey)
-        || KEYS_SPLIT_COMMA.includes(previousKey)) {
-          const out = separateName_Version_Operator(values);
+        insertData(currentPackage, previousKey, {
+          summary: description_values.summary,
+          detail: description_values.detail
+        }, package_flag, `package${package_counter}`);
+        previousKey = '';
+        description_values = {
+          summary: '',
+          detail: ''
+        };
+      } else if (KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE.includes(previousKey.toLowerCase())
+        || KEYS_WHICH_VALUES_SPLIT_COMMA.includes(previousKey.toLowerCase())) {
+          const out = separateName_Version_Operator_Architecture(values);
           insertData(currentPackage, previousKey, out, package_flag, `package${package_counter}`);
           previousKey = '';
           values = [];
@@ -158,67 +228,56 @@ const parseControlFile = (controlFileContent, package_name) => {
       if (key.includes('Maintainer') || key === 'Uploaders') {
         const [name, remain] = value.split(' <');
         const email = remain.split('>')[0];
-        insertData(currentPackage, key, {
-          Maintainer: name,
+        addData(currentPackage, 'Maintainers', key,{
+          Name: name,
           Email: email
-        }, package_flag, `package${package_counter}`);
+        });
       } else if (key == 'Homepage' || key.includes('Vcs') || key === 'Bugs') {
         addData(currentPackage, 'URL', key, value);
       } else if (key.includes('Version')) {
         addData(currentPackage, 'Version', key, value);
       } else if (key === 'Description') {
-        previousKey = key;
         description_values = {
           summary: value,
           detail: ''
         };
       } else if (key === 'Package') {
+        // Packageフィールドがない場合，作成
         if (currentPackage[key] === undefined) {
           currentPackage[key] = {};
         }
         currentPackage.Package[`package${package_counter}`] = {}
         package_flag = true;
         insertData(currentPackage, 'Name', value, package_flag, `package${package_counter}`);
-      } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(key)) {
-        previousKey = key;
+      } else if (KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE.includes(key.toLowerCase())) {
         pushValuesAfterSplitCommaAndPipe(value, values);
-      } else if (KEYS_SPLIT_COMMA.includes(key)) {
-        previousKey = key;
+      } else if (KEYS_WHICH_VALUES_SPLIT_COMMA.includes(key.toLowerCase())) {
         pushValuesAfterSplitComma(value, values);
       } else {
         insertData(currentPackage, key, value, package_flag, `package${package_counter}`);
       }
+      previousKey = key;
     } else {
       if (previousKey === 'Description') {
         description_values = {
           ...description_values,
           detail: `${description_values.detail} ${key}`
         };
-      } else if (KEYS_SPLIT_COMMA_OR_PIPE.includes(previousKey)) {
+      } else if (KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE.includes(previousKey.toLowerCase())) {
         pushValuesAfterSplitCommaAndPipe(key, values);
-      } else if (KEYS_SPLIT_COMMA.includes(previousKey)) {
+      } else if (KEYS_WHICH_VALUES_SPLIT_COMMA.includes(previousKey.toLowerCase())) {
         pushValuesAfterSplitComma(key, values);
       }
     }
   }
 
-  if (previousKey === 'Description') {
-    insertAndInitDescriptionData(
-      currentPackage,
-      previousKey,
-      description_values,
-      package_flag,
-      package_counter
-    );
-  }
-
   return currentPackage;
-}
+};
 
 const convertToJSON = (controlFileContent, package_name) => {
   const packages = parseControlFile(controlFileContent, package_name);
   return packages;
-}
+};
 
 function main() {
   // Read the control file content from a file
@@ -228,7 +287,7 @@ function main() {
   const jsonOutput = convertToJSON(controlFileContent, package_name);
   // Write JSON to a file
   fs.writeFileSync(`${package_name}.json`, JSON.stringify(jsonOutput, null, 2));
-}
+};
 
 main();
 

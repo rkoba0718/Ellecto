@@ -17,9 +17,15 @@ export type ProjectInfo = {
             Email: string
         };
     };
-    Description: {
-        summary: string;
-        detail: string;
-    };
+    Package: {
+        [key: string]: {
+            Name: string;
+            Description: {
+                summary: string;
+                detail: string;
+            };
+            [key: string]: any;
+        };
+    }
     [key: string]: any;  // その他の任意フィールド
 };

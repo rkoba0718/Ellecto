@@ -51,6 +51,3 @@ services:
     command: sh -c "npm install && npm run dev"
     depends_on:
       - mongo
-  bert:
-    build: bert/
-    tty: true

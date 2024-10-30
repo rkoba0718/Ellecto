@@ -24,7 +24,7 @@ export type ProjectInfo = {
     Package: {
         [key: string]: {
             Name: string;
-            Description: {
+            Description?: {
                 summary: string;
                 detail: string;
             };

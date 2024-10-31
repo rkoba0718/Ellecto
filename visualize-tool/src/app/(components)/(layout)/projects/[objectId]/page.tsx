@@ -4,9 +4,9 @@ import React from "react";
 
 import SelectedProjectProvider from "@/app/(components)/containers/providers/SelectedProjectProvider";
 import ProjectOverviewContainer from "@/app/(components)/containers/projects/shows/ProjectOverviewContainer";
+import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
 
 // TODO: component UI
-const LanguageInfo = () => <div className="mb-8">Language Information</div>;
 const DependencyGraph = () => <div className="mb-8">Dependency Graph</div>;
 const PackageInfo = () => <div className="mb-8">Package Information</div>;
 const SimilarProjects = () => <div className="mb-8">Similar Projects</div>;
@@ -25,12 +25,11 @@ const ProjectShow: React.FC = () => {
                         <>
                             <ProjectOverviewContainer project={project} />
 
-                            {/* Language Information Section */}
-                            <div className="flex flex-wrap">
-                                <div className="w-full md:w-1/2 pr-4">
-                                    <LanguageInfo />
+                            <div className="flex flex-wrap pb-2">
+                                <div className="w-full md:w-1/2 px-4">
+                                    <LanguageInfoContainer language={project.Language} loc={project.LOC} />
                                 </div>
-                                <div className="w-full md:w-1/2 pl-4">
+                                <div className="w-full md:w-1/2 px-4">
                                     <DependencyGraph />
                                 </div>
                             </div>

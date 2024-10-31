@@ -25,7 +25,7 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
 
             <div className="flex flex-wrap justify-around items-start mt-4">
                 <div className="w-full md:w-1/3">
-                    <h2 className="font-semibold mb-3 flex items-center justify-center">
+                    <h2 className="font-bold text-xl mb-3 flex items-center justify-center">
                         <FontAwesomeIcon icon={faUser} className="mr-2" />
                         Maintainers
                     </h2>
@@ -38,7 +38,7 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
                 </div>
 
                 <div className="w-full md:w-1/3">
-                    <h2 className="font-semibold mb-3 flex items-center justify-center">
+                    <h2 className="font-bold text-xl mb-3 flex items-center justify-center">
                         <FontAwesomeIcon icon={faBalanceScale} className="mr-2" />
                         License
                     </h2>
@@ -52,7 +52,7 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
                 </div>
 
                 <div className="w-full md:w-1/3">
-                    <h2 className="font-semibold mb-3">
+                    <h2 className="font-bold text-xl mb-3">
                         <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2" />
                         URL
                     </h2>

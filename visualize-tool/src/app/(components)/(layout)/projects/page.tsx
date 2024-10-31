@@ -2,9 +2,10 @@
 
 import React from "react";
 
+import { projectsPerPage } from "../../containers/providers/ProjectsProvider/config";
 import ProjectsProvider from "../../containers/providers/ProjectsProvider";
 import ResultSummaryContainer from "../../containers/projects/ResultSummaryContainer";
-import PaginationContainer from "../../containers/projects/PaginationContainer";
+import PaginationContainer from "../../common/containers/PaginationContainer";
 
 const Projects: React.FC = () => {
     return (
@@ -23,6 +24,7 @@ const Projects: React.FC = () => {
                             currentPage={currentPage}
                             setCurrentPage={setCurrentPage}
                             totalProjects={totalProjects}
+                            projectsPerPage={projectsPerPage}
                         />
                     </>
                 </div>

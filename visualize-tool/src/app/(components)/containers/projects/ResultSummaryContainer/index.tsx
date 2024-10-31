@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 import { projectsPerPage } from "@/app/(components)/containers/providers/ProjectsProvider/config";
 import ResultSummary from "@/app/(components)/presentationals/projects/ResultSummary";
-import PaginationContainer from "../PaginationContainer";
+import PaginationContainer from "../../../common/containers/PaginationContainer";
 import SearchResultContainer from "../SearchResultContainer";
 
 type ResultSummaryContainerProps = {
@@ -52,6 +52,7 @@ const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 totalProjects={totalProjects}
+                projectsPerPage={projectsPerPage}
             />
             <SearchResultContainer result={result} />
         </>

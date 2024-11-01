@@ -5,9 +5,9 @@ import React from "react";
 import SelectedProjectProvider from "@/app/(components)/containers/providers/SelectedProjectProvider";
 import ProjectOverviewContainer from "@/app/(components)/containers/projects/shows/ProjectOverviewContainer";
 import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
+import DependencyInfoContainer from "@/app/(components)/containers/projects/shows/DependencyInfoContainer";
 
 // TODO: component UI
-const DependencyGraph = () => <div className="mb-8">Dependency Graph</div>;
 const PackageInfo = () => <div className="mb-8">Package Information</div>;
 const SimilarProjects = () => <div className="mb-8">Similar Projects</div>;
 const CommitStats = () => <div className="mb-8">Commit Statistics</div>;
@@ -17,7 +17,7 @@ const CommunityInfo = () => <div className="mb-8">Community Information</div>;
 const ProjectShow: React.FC = () => {
     return (
         <SelectedProjectProvider >
-            {(project) => (
+            {(project, transitiveProjects) => (
                 <div className="container mx-auto py-10 px-10">
                     {project === null ? (
                         <div>Failed to load project data.</div>
@@ -30,7 +30,15 @@ const ProjectShow: React.FC = () => {
                                     <LanguageInfoContainer language={project.Language} loc={project.LOC} />
                                 </div>
                                 <div className="w-full md:w-1/2 px-4">
-                                    <DependencyGraph />
+                                    <DependencyInfoContainer
+                                        selectedProjectName={project.Name}
+                                        dependencies={
+                                            project['Build-Depends'] ?
+                                            project['Build-Depends'] :
+                                            undefined
+                                        }
+                                        transitiveDependencies={transitiveProjects}
+                                    />
                                 </div>
                             </div>
 

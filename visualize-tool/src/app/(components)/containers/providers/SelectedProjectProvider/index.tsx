@@ -4,14 +4,19 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
 import { ProjectInfo } from '@/app/types/ProjectInfo';
+import Loading from '@/app/(components)/common/presentationals/Loading';
 
 type SelectedProjectProviderProps = {
-  children: (project: ProjectInfo | null) => React.ReactNode;
+  children: (
+    project: ProjectInfo | null,
+    transitiveProjects: ProjectInfo[],
+  ) => React.ReactNode;
 };
 
 const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ children }) => {
   const { objectId } = useParams();
   const [project, setProject] = useState<ProjectInfo | null>(null);
+  const [transitiveProjects, setTransitiveProjects] = useState<ProjectInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -22,7 +27,8 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
       try {
         const response = await fetch(`/api/projects/${objectId}`);
         const data = await response.json();
-        setProject(data);
+        setProject(data.project);
+        setTransitiveProjects(data.transitiveDependencyProjects);
       } catch (err) {
         setError(true);
       } finally {
@@ -34,7 +40,7 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
 
   // TODO: Loading表示
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   // TODO: Error表示
@@ -42,7 +48,7 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
     return <div>Failed to load project data.</div>;
   }
 
-  return <>{children(project)}</>;
+  return <>{children(project, transitiveProjects)}</>;
 };
 
 export default SelectedProjectProvider;

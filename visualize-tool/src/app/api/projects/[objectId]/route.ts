@@ -16,7 +16,18 @@ export async function GET(req: Request, { params }: { params: { objectId: string
             return NextResponse.json({ message: 'Project not found' }, { status: 404 });
         }
 
-        return NextResponse.json(project, { status: 200 });
+        const dependencies = project['Build-Depends'] ? project['Build-Depends'] : undefined;
+        const transitiveDependencyProjects = []; // 推移的に依存するプロジェクトを保存するオブジェクト
+        if (dependencies !== undefined) {
+            for (const dep of dependencies) {
+                const transDep = await collection.findOne({ Name: dep.Name });
+                if (transDep) {
+                    transitiveDependencyProjects.push(transDep);
+                }
+            }
+        }
+
+        return NextResponse.json({ project, transitiveDependencyProjects }, { status: 200 });
     } catch (error) {
         // TODO: エラー処理
         console.error('Error fetching project:', error);

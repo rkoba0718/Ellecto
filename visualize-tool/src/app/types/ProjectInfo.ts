@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import { Language } from "./Language";
+import { Description } from "./Description";
 
 export type ProjectInfo = {
     _id: ObjectId;
@@ -14,10 +15,7 @@ export type ProjectInfo = {
             Email: string
         };
     };
-    Description: {
-        summary: string;
-        detail: string;
-    };
+    Description: Description;
     Package: {
         [key: string]: {
             Name: string;

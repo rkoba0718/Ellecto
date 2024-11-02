@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 
 import { Language } from "./Language";
 import { Description } from "./Description";
+import { Package } from "./Package";
 
 export type ProjectInfo = {
     _id: ObjectId;
@@ -16,15 +17,6 @@ export type ProjectInfo = {
         };
     };
     Description: Description;
-    Package: {
-        [key: string]: {
-            Name: string;
-            Description?: {
-                summary: string;
-                detail: string;
-            };
-            [key: string]: any;
-        };
-    }
+    Package: Package;
     [key: string]: any;  // その他の任意フィールド
 };

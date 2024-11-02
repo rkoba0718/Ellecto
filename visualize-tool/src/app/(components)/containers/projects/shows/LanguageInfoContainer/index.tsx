@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import { Language } from "@/app/types/Language";
 import LanguageInfo from "@/app/(components)/presentationals/projects/shows/LanguageInfo";
 
 const colors = [
@@ -17,12 +18,7 @@ const colors = [
 ];
 
 type LanguageInfoContainerProps = {
-    language: {
-        [key: string]: {
-            Name: string;
-            Percentage: string;
-        };
-    };
+    language: Language;
     loc: number;
 };
 

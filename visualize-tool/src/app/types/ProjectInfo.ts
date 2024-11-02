@@ -1,14 +1,11 @@
 import { ObjectId } from "mongodb";
 
+import { Language } from "./Language";
+
 export type ProjectInfo = {
     _id: ObjectId;
     Name: string;
-    Language: {
-        [key: string]: {
-            Name: string;
-            Percentage: string;
-        };
-    };
+    Language: Language;
     LOC: number;
     License: string;
     Maintainers: {

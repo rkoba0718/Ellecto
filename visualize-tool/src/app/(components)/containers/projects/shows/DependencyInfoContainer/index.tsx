@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 import { Dependency } from "@/app/types/Dependency";
 import { ProjectInfo } from "@/app/types/ProjectInfo";
-import { Graph } from "@/app/types/graph";
+import { Graph } from "@/app/types/Graph";
 import DependencyInfo from "@/app/(components)/presentationals/projects/shows/dependency/DependencyInfo";
 
 const dependenciesPerPage = 5; // 1ページに表示する依存関係の数

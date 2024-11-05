@@ -16,6 +16,7 @@ const escapeRegExp = (string: string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $&は一致した部分全体を参照
 }
 
+// 与えられたキーワードやライセンスなどの情報からDBを検索し，スコア順に返す関数
 export async function searchProjects(searchTerm: string, language: string, license: string, weight: any) {
     const db = await connectToDatabase();
     const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
@@ -95,3 +96,34 @@ export async function searchProjects(searchTerm: string, language: string, licen
     // スコア順にソート
     return scoredResults.sort((a, b) => b.score - a.score);
 };
+
+// 与えられたpackageNameの類似度計算結果を取得する関数
+export async function getSimilarProjects(packageName: string): Promise<string[]> {
+    const db = await connectToDatabase();
+    const collection = db.collection(process.env.SIMILARITY_COLLECTION_NAME as string);
+
+    // 類似度データを取得し、上位5件のキー（プロジェクト名）を抽出
+    const similarityData = await collection.findOne({ Name: packageName });
+    if (!similarityData) return [];
+
+    // 類似度が高い順にソートし、Top5を取得
+    const sortedProjectNames = Object.entries(similarityData)
+        .filter(([key, value]) => key !== "Name" && typeof value === "number" && value > 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([key]) => key);
+
+    return sortedProjectNames;
+}
+
+// 与えられたプロジェクト名のデータを取得する関数
+export async function getProjectDetails(projectName: string): Promise<any> {
+    const db = await connectToDatabase();
+    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+
+    // プロジェクト名でデータベースから詳細情報を取得
+    const project = await collection.findOne({ Name: projectName });
+    if (!project) throw new Error(`Project ${projectName} not found`);
+
+    return project;
+}

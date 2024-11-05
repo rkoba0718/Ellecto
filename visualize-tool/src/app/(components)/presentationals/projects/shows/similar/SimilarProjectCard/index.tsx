@@ -51,17 +51,17 @@ const SimilarProjectCard: React.FC<SimilarProjectCardProps> = ({
                         {project.Name}
                     </Link>
                 </h3>
-                <p className="text-gray-700 mb-4">
+                <div className="text-gray-700 mb-4">
                     <SummaryView project={project} />
-                </p>
+                </div>
             </div>
             <div className="mt-auto text-gray-700">
-                <p>
+                <div>
                     <strong>Language:</strong> {project.Language.Lang1.Name}
-                </p>
-                <p>
+                </div>
+                <div>
                     <strong>License:</strong> {project.License}
-                </p>
+                </div>
             </div>
         </div>
     );

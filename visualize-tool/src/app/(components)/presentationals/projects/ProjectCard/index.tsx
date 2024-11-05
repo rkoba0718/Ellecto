@@ -60,15 +60,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                         {project.Name}
                     </Link>
                 </h2>
-                <p className="text-gray-700 mb-4">
+                <div className="text-gray-700 mb-4">
                     <SummaryView project={project} />
-                </p>
+                </div>
             </div>
 
             <div className="w-1/5 flex flex-col justify-center">
-                {project.Section && <p className="mb-1"><strong>Section:</strong> {project.Section}</p>}
-                <p className="mb-1"><strong>Language:</strong> {project.Language.Lang1.Name}</p>
-                <p><strong>License:</strong> {project.License}</p>
+                {project.Section && <span className="mb-1"><strong>Section:</strong> {project.Section}</span>}
+                <span className="mb-1"><strong>Language:</strong> {project.Language.Lang1.Name}</span>
+                <span><strong>License:</strong> {project.License}</span>
             </div>
         </div>
     );

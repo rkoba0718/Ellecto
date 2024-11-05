@@ -6,9 +6,9 @@ import SelectedProjectProvider from "@/app/(components)/containers/providers/Sel
 import ProjectOverviewContainer from "@/app/(components)/containers/projects/shows/ProjectOverviewContainer";
 import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
 import DependencyInfoContainer from "@/app/(components)/containers/projects/shows/DependencyInfoContainer";
+import PackageInfoContainer from "@/app/(components)/containers/projects/shows/PackageInfoContainer";
 
 // TODO: component UI
-const PackageInfo = () => <div className="mb-8">Package Information</div>;
 const SimilarProjects = () => <div className="mb-8">Similar Projects</div>;
 const CommitStats = () => <div className="mb-8">Commit Statistics</div>;
 const DownloadStats = () => <div className="mb-8">Download Statistics</div>;
@@ -42,8 +42,7 @@ const ProjectShow: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Package Information Section */}
-                            <PackageInfo />
+                            <PackageInfoContainer packageData={project.Package} />
 
                             {/* Similar Projects Section */}
                             <SimilarProjects />

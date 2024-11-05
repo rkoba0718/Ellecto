@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faProjectDiagram, faList } from "@fortawesome/free-solid-svg-icons";
 
 import { Dependency } from "@/app/types/Dependency";
-import { Graph } from "@/app/types/graph";
+import { Graph } from "@/app/types/Graph";
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 import DependencyGraph from "@/app/(components)/presentationals/projects/shows/dependency/DependencyGraph";
 import DependencyList from "@/app/(components)/presentationals/projects/shows/dependency/DependencyList";

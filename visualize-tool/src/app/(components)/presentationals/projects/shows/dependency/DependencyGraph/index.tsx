@@ -3,7 +3,7 @@
 import React from "react";
 import { ForceGraph2D } from "react-force-graph";
 
-import { Graph } from "@/app/types/graph";
+import { Graph } from "@/app/types/Graph";
 
 type DependencyGraphProps = {
     graphData: Graph;

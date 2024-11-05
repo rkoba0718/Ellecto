@@ -16,7 +16,7 @@ const DependencyGraph: React.FC<DependencyGraphProps> = ({
         <ForceGraph2D
             graphData={graphData}
             width={600}
-            height={280}
+            height={250}
             nodeLabel="id"
             nodeAutoColorBy="color"
             linkDirectionalArrowLength={4} // エッジの長さ

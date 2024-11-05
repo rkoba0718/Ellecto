@@ -7,9 +7,9 @@ import ProjectOverviewContainer from "@/app/(components)/containers/projects/sho
 import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
 import DependencyInfoContainer from "@/app/(components)/containers/projects/shows/DependencyInfoContainer";
 import PackageInfoContainer from "@/app/(components)/containers/projects/shows/PackageInfoContainer";
+import SimilarProjectsContainer from "@/app/(components)/containers/projects/shows/SimilarProjectsContainer";
 
 // TODO: component UI
-const SimilarProjects = () => <div className="mb-8">Similar Projects</div>;
 const CommitStats = () => <div className="mb-8">Commit Statistics</div>;
 const DownloadStats = () => <div className="mb-8">Download Statistics</div>;
 const CommunityInfo = () => <div className="mb-8">Community Information</div>;
@@ -24,7 +24,6 @@ const ProjectShow: React.FC = () => {
                     ) : (
                         <>
                             <ProjectOverviewContainer project={project} />
-
                             <div className="flex flex-wrap pb-2">
                                 <div className="w-full md:w-1/2 px-4">
                                     <LanguageInfoContainer language={project.Language} loc={project.LOC} />
@@ -41,11 +40,8 @@ const ProjectShow: React.FC = () => {
                                     />
                                 </div>
                             </div>
-
                             <PackageInfoContainer packageData={project.Package} />
-
-                            {/* Similar Projects Section */}
-                            <SimilarProjects />
+                            <SimilarProjectsContainer packageName={project.Name} />
 
                             {/* Commit, Download, and Community Information */}
                             <div className="flex flex-wrap">

@@ -20,6 +20,10 @@ const SimilarProjects: React.FC<SimilarProjectsProps> = ({
             <>
                 {loading ? (
                     <Loading />
+                ) : projects.length === 0 ? (
+                    <div className="text-gray-500">
+                        No Similar Projects
+                    </div>
                 ) : (
                     <div className="flex flex-wrap justify-center gap-8">
                         {projects.map((project, index) => (

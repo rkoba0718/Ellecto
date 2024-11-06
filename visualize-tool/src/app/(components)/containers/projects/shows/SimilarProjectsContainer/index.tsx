@@ -20,7 +20,7 @@ const SimilarProjectsContainer: React.FC<SimilarProjectsContainerProps> = ({
             setLoading(true);
             try {
                 // APIエンドポイントから類似プロジェクトのデータを取得
-                const response = await fetch(`/api/similar/${packageName}`);
+                const response = await fetch(`/api/similar/${encodeURIComponent(packageName)}`);
                 const data = await response.json();
                 setSimilarProjects(data);
             } catch (error) {

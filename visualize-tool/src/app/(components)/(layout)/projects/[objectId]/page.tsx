@@ -8,11 +8,8 @@ import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/
 import DependencyInfoContainer from "@/app/(components)/containers/projects/shows/DependencyInfoContainer";
 import PackageInfoContainer from "@/app/(components)/containers/projects/shows/PackageInfoContainer";
 import SimilarProjectsContainer from "@/app/(components)/containers/projects/shows/SimilarProjectsContainer";
-
-// TODO: component UI
-const CommitStats = () => <div className="mb-8">Commit Statistics</div>;
-const DownloadStats = () => <div className="mb-8">Download Statistics</div>;
-const CommunityInfo = () => <div className="mb-8">Community Information</div>;
+import CommitStatsContainer from "@/app/(components)/containers/projects/shows/CommitStatsContainer";
+import ContributionContainer from "@/app/(components)/containers/projects/shows/ContributionContainer";
 
 const ProjectShow: React.FC = () => {
     return (
@@ -20,6 +17,7 @@ const ProjectShow: React.FC = () => {
             {(project, transitiveProjects) => (
                 <div className="container mx-auto py-10 px-10">
                     {project === null ? (
+                        // TODO: null表示
                         <div>Failed to load project data.</div>
                     ) : (
                         <>
@@ -42,17 +40,25 @@ const ProjectShow: React.FC = () => {
                             </div>
                             <PackageInfoContainer packageData={project.Package} />
                             <SimilarProjectsContainer packageName={project.Name} />
-
-                            {/* Commit, Download, and Community Information */}
-                            <div className="flex flex-wrap">
-                                <div className="w-full md:w-1/3 pr-4">
-                                    <CommitStats />
+                            <div className="flex flex-wrap pb-2">
+                                <div className="w-full md:w-1/2 pr-4">
+                                    <CommitStatsContainer
+                                        projectName={project.Name}
+                                        url={
+                                            project.URL['Vcs-Browser'] ?
+                                            project.URL['Vcs-Browser'] :
+                                            undefined
+                                        }
+                                    />
                                 </div>
-                                <div className="w-full md:w-1/3 px-2">
-                                    <DownloadStats />
-                                </div>
-                                <div className="w-full md:w-1/3 pl-4">
-                                    <CommunityInfo />
+                                <div className="w-full md:w-1/2 pl-4">
+                                    <ContributionContainer
+                                        url={
+                                            project.URL['Vcs-Browser'] ?
+                                            project.URL['Vcs-Browser'] :
+                                            undefined
+                                        }
+                                    />
                                 </div>
                             </div>
                         </>

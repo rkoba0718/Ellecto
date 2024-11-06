@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const url = process.env.DB_URL as string;
 let client: MongoClient | null = null;
@@ -114,7 +114,7 @@ export async function getSimilarProjects(packageName: string): Promise<string[]>
         .map(([key]) => key);
 
     return sortedProjectNames;
-}
+};
 
 // 与えられたプロジェクト名のデータを取得する関数
 export async function getProjectDetails(projectName: string): Promise<any> {
@@ -126,4 +126,19 @@ export async function getProjectDetails(projectName: string): Promise<any> {
     if (!project) throw new Error(`Project ${projectName} not found`);
 
     return project;
-}
+};
+
+// REST APIによって，取得したコミットデータをDBに保存する関数（キャッシュすることで，apiレスポンスの回数を減らすことができる）
+export async function cacheCommitData(projectId: ObjectId, monthlyCommits: { [month: string]: number }, lastFetchDate: Date) {
+    const db = await connectToDatabase();
+    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+
+    const commitData = {
+        lastFetchDate: lastFetchDate,
+        cacheData: monthlyCommits
+    }
+    await collection.updateOne(
+        { _id: projectId },
+        { $set: { Commit: commitData } }
+    );
+};

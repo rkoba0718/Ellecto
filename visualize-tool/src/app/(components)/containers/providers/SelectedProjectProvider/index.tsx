@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
 import { ProjectInfo } from '@/app/types/ProjectInfo';
-import Loading from '@/app/(components)/common/presentationals/Loading';
 
 type SelectedProjectProviderProps = {
   children: (
+    loading: boolean,
     project: ProjectInfo | null,
     transitiveProjects: ProjectInfo[],
   ) => React.ReactNode;
@@ -42,17 +42,12 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
     fetchProject();
   }, [objectId]);
 
-  // TODO: Loading表示
-  if (loading) {
-    return <Loading />;
-  }
-
   // TODO: Error表示
   if (error) {
     return <div>Failed to load project data.</div>;
   }
 
-  return <>{children(project, transitiveProjects)}</>;
+  return <>{children(loading, project, transitiveProjects)}</>;
 };
 
 export default SelectedProjectProvider;

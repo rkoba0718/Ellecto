@@ -4,6 +4,7 @@ import React from "react";
 
 import NoData from "@/app/(components)/common/presentationals/NoData";
 import SelectedProjectProvider from "@/app/(components)/containers/providers/SelectedProjectProvider";
+import ProjectTitleContainer from "@/app/(components)/containers/projects/shows/ProjectTitleContainer";
 import ProjectOverviewContainer from "@/app/(components)/containers/projects/shows/ProjectOverviewContainer";
 import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
 import DependencyInfoContainer from "@/app/(components)/containers/projects/shows/DependencyInfoContainer";
@@ -21,6 +22,7 @@ const ProjectShow: React.FC = () => {
                         <NoData message="Failed to get project data" />
                     ) : (
                         <>
+                            <ProjectTitleContainer project={project} />
                             <ProjectOverviewContainer project={project} />
                             <div className="flex flex-wrap pb-2">
                                 <div className="w-full md:w-1/2 px-4">

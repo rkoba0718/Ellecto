@@ -16,14 +16,6 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
 }) => {
     return (
         <div className="text-center pb-2">
-            <h1 className="text-3xl font-bold mb-4">{project.Name}</h1>
-
-            {project.Section && (
-                <span className="text-sm text-green-600 bg-green-100 rounded-full px-3 py-1 mr-2 inline-block">
-                    {project.Section}
-                </span>
-            )}
-
             <div className="flex flex-wrap justify-around items-start mt-4">
                 <div className="w-full md:w-1/3">
                     <h2 className="font-bold text-xl mb-3 flex items-center justify-center">

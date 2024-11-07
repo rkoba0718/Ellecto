@@ -23,7 +23,7 @@ const DependencyItem: React.FC<DependencyItemProps> = ({
     };
 
     return (
-        <div className="border border-gray-300 rounded-md px-3 py-1">
+        <div className="border border-gray-300 rounded-md px-3 py-1 mx-4">
             <div className="flex items-center justify-between cursor-pointer" onClick={toggleExpand}>
                 <span>{dep.Name}</span>
                 <FontAwesomeIcon icon={expanded ? faAngleUp : faAngleDown} />

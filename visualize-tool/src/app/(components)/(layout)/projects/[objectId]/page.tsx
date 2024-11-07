@@ -24,11 +24,12 @@ const ProjectShow: React.FC = () => {
                         <>
                             <ProjectTitleContainer project={project} />
                             <ProjectOverviewContainer project={project} />
+                            <PackageInfoContainer packageData={project.Package} />
                             <div className="flex flex-wrap pb-2">
-                                <div className="w-full md:w-1/2 px-4">
+                                <div className="w-full md:w-2/5 px-4">
                                     <LanguageInfoContainer language={project.Language} loc={project.LOC} />
                                 </div>
-                                <div className="w-full md:w-1/2 px-4">
+                                <div className="w-full md:w-3/5 px-4">
                                     <DependencyInfoContainer
                                         selectedProjectName={project.Name}
                                         dependencies={
@@ -40,7 +41,6 @@ const ProjectShow: React.FC = () => {
                                     />
                                 </div>
                             </div>
-                            <PackageInfoContainer packageData={project.Package} />
                             <SimilarProjectsContainer packageName={project.Name} />
                             <div className="flex flex-wrap pb-2">
                                 <div className="w-full md:w-1/2 pr-4">

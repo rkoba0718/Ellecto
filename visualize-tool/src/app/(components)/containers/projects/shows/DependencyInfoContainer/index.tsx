@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Dependency } from "@/app/types/Dependency";
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 import { Graph } from "@/app/types/Graph";
+import NoData from "@/app/(components)/common/presentationals/NoData";
 import DependencyInfo from "@/app/(components)/presentationals/projects/shows/dependency/DependencyInfo";
 
 const dependenciesPerPage = 5; // 1ページに表示する依存関係の数
@@ -119,9 +120,7 @@ const DependencyInfoContainer: React.FC<DependencyInfoContainerProps> = ({
         currentDependencies === undefined ? (
             <>
                 <h2 className="font-bold text-xl mb-2">Dependency Packages for Build</h2>
-                <div className="text-gray-500">
-                    No Dependencies
-                </div>
+                <NoData message="No Dependencies" />
             </>
         ) : (
             <DependencyInfo

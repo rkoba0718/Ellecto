@@ -4,6 +4,7 @@ import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 import Loading from "@/app/(components)/common/presentationals/Loading";
+import NoData from "@/app/(components)/common/presentationals/NoData";
 
 type CommitStatsProps = {
     loading: boolean;
@@ -26,11 +27,11 @@ const CommitStats: React.FC<CommitStatsProps> = ({
             {loading ? (
                 <Loading />
             ) : (
-                <div className="p-4 border rounded-md shadow">
+                <>
                     {graphData.length === 0 ? (
-                        <p>No commit data</p>
+                        <NoData message="No commit data" />
                     ) : (
-                        <>
+                        <div className="p-4 border rounded-md shadow">
                             <h3 className="text-xl font-bold mb-4">Commits per Month</h3>
                             <ResponsiveContainer width="100%" height={300}>
                                 <LineChart data={graphData}>
@@ -45,7 +46,7 @@ const CommitStats: React.FC<CommitStatsProps> = ({
                                         strokeWidth={3}
                                         dot={false}
                                         activeDot={{ r: 5 }}
-                                    />
+                                        />
                                 </LineChart>
                             </ResponsiveContainer>
                             <div className="flex justify-between text-center mt-2">
@@ -62,9 +63,9 @@ const CommitStats: React.FC<CommitStatsProps> = ({
                                     <p className="text-gray-600">Total Commits</p>
                                 </div>
                             </div>
-                        </>
+                        </div>
                     )}
-                </div>
+                </>
             )}
         </div>
     );

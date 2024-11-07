@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-
-import { ProjectInfo } from "@/app/types/ProjectInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faBalanceScale, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+
+import { ProjectInfo } from "@/app/types/ProjectInfo";
+import NoData from "@/app/(components)/common/presentationals/NoData";
 
 type ProjectOverviewProps = {
     project: ProjectInfo
@@ -43,9 +44,7 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
                         License
                     </h2>
                     {project.License === '' ? (
-                        <div className="text-gray-500">
-                            No License
-                        </div>
+                        <NoData message="No License" />
                     ) : (
                         <p>{project.License}</p>
                     )}
@@ -73,9 +72,7 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
                             );
                         })
                     ) : (
-                        <div className="text-gray-500">
-                            No URLs
-                        </div>
+                        <NoData message="No URLs" />
                     )}
                 </div>
             </div>

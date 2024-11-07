@@ -6,6 +6,7 @@ import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 
 import { Dependency } from "@/app/types/Dependency";
 import { Package } from "@/app/types/Package";
+import NoData from "@/app/(components)/common/presentationals/NoData";
 import PaginationContainer from "@/app/(components)/common/containers/PaginationContainer";
 
 type DependItemProps = {
@@ -57,9 +58,13 @@ const PackageDetail: React.FC<PackageDetailProps> = ({
     return (
         <div className="p-4 border rounded-md bg-gray-50">
             <h2 className="font-bold text-2xl mb-3">{packageDetailData.Name}</h2>
-            <p className="text-xl text-gray-700 mb-1">
-                {packageDetailData.Description?.summary || 'No description'}
-            </p>
+            {packageDetailData.Description?.summary ? (
+                <p className="text-xl text-gray-700 mb-1">
+                    {packageDetailData.Description.summary}
+                </p>
+            ) : (
+                <NoData message="No description" />
+            )}
             <p className="text-gray-700 mb-2">
                 {packageDetailData.Description?.detail || ''}
             </p>
@@ -86,7 +91,7 @@ const PackageDetail: React.FC<PackageDetailProps> = ({
                         />
                     </div>
                 ) : (
-                    <p className="ml-2 text-gray-700">No dependencies.</p>
+                    <NoData message="No dependencies" />
                 )}
             </div>
         </div>

@@ -4,6 +4,7 @@ import React from "react";
 
 import { Contributor } from "@/app/types/Contributor";
 import Loading from "@/app/(components)/common/presentationals/Loading";
+import NoData from "@/app/(components)/common/presentationals/NoData";
 
 type ContributionProps = {
     loading: boolean;
@@ -22,9 +23,7 @@ const Contribution: React.FC<ContributionProps> = ({
             ) : (
                 <>
                     {contributors === null ? (
-                        <div className="text-gray-500">
-                            No contributors data
-                        </div>
+                        <NoData message="No contributors data" />
                     ) : (
                         <div className="space-y-4">
                             {contributors.map((contributor, index) => (

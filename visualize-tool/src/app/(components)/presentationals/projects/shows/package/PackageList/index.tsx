@@ -25,7 +25,7 @@ const PackageList: React.FC<PackageListProps> = ({
                 >
                     <p className="font-semibold">{packageData[key].Name}</p>
                     <p className="text-gray-600 text-sm">
-                        {packageData[key].Description?.summary || "No description"}
+                        {packageData[key].Description?.summary || "No summary description"}
                     </p>
                 </div>
             ))}

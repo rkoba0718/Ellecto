@@ -2,6 +2,7 @@
 
 import React from "react";
 
+import NoData from "@/app/(components)/common/presentationals/NoData";
 import SelectedProjectProvider from "@/app/(components)/containers/providers/SelectedProjectProvider";
 import ProjectOverviewContainer from "@/app/(components)/containers/projects/shows/ProjectOverviewContainer";
 import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
@@ -17,8 +18,7 @@ const ProjectShow: React.FC = () => {
             {(project, transitiveProjects) => (
                 <div className="container mx-auto py-10 px-10">
                     {project === null ? (
-                        // TODO: null表示
-                        <div>Failed to load project data.</div>
+                        <NoData message="Failed to get project data" />
                     ) : (
                         <>
                             <ProjectOverviewContainer project={project} />
@@ -45,7 +45,7 @@ const ProjectShow: React.FC = () => {
                                     <CommitStatsContainer
                                         projectName={project.Name}
                                         url={
-                                            project.URL['Vcs-Browser'] ?
+                                            project.URL && project.URL['Vcs-Browser'] ?
                                             project.URL['Vcs-Browser'] :
                                             undefined
                                         }
@@ -54,7 +54,7 @@ const ProjectShow: React.FC = () => {
                                 <div className="w-full md:w-1/2 pl-4">
                                     <ContributionContainer
                                         url={
-                                            project.URL['Vcs-Browser'] ?
+                                            project.URL && project.URL['Vcs-Browser'] ?
                                             project.URL['Vcs-Browser'] :
                                             undefined
                                         }

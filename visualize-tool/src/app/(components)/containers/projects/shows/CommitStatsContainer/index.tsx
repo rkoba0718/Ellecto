@@ -19,13 +19,17 @@ const CommitStatsContainer: React.FC<CommitStatsContainerProps> = ({
 
     useEffect(() => {
         const fetchData = async () => {
-            // TODO: Not表示
-            if (url === undefined) return;
+            if (url === undefined) {
+                setLoading(false);
+                return
+            };
             setLoading(true);
             try {
                 const response = await fetch(`/api/commit/${encodeURIComponent(projectName)}/${encodeURIComponent(url)}`);
-                // TODO: null表示
-                if (response === null) return;
+                if (response === null) {
+                    setLoading(false);
+                    return;
+                };
                 const data = await response.json();
                 setCommitData(data.newCacheData);
                 setTotalCommits(data.totalCommits);

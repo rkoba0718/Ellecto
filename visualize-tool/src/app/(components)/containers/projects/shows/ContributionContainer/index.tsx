@@ -18,8 +18,10 @@ const ContributionContainer: React.FC<ContributionContainerProps> = ({
 
     useEffect(() => {
         const fetchData = async () => {
-            // TODO: Not表示
-            if (url === undefined) return;
+            if (url === undefined) {
+                setLoading(false);
+                return
+            };
             setLoading(true);
             try {
                 const data = url.includes('github.com')
@@ -27,8 +29,10 @@ const ContributionContainer: React.FC<ContributionContainerProps> = ({
                     : url.includes('salsa.debian.org')
                     ? await fetchSalsaDebianContributorData(url)
                     : null;
-                // TODO: null表示
-                if (data === null) return;
+                if (data === null) {
+                    setLoading(false)
+                    return;
+                };
                 setContributorData(data);
             } catch (error) {
                 // TODO: エラー処理

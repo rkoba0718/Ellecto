@@ -27,6 +27,10 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
       try {
         const response = await fetch(`/api/projects/${objectId}`);
         const data = await response.json();
+        if (data === null) {
+          setProject(null);
+          return;
+        }
         setProject(data.project);
         setTransitiveProjects(data.transitiveDependencyProjects);
       } catch (err) {
@@ -44,7 +48,7 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
   }
 
   // TODO: Error表示
-  if (error || !project) {
+  if (error) {
     return <div>Failed to load project data.</div>;
   }
 

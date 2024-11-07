@@ -4,6 +4,7 @@ import React from "react";
 
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 import Loading from "@/app/(components)/common/presentationals/Loading";
+import NoData from "@/app/(components)/common/presentationals/NoData";
 import SimilarProjectCard from "../SimilarProjectCard";
 type SimilarProjectsProps = {
     projects: ProjectInfo[];
@@ -21,9 +22,7 @@ const SimilarProjects: React.FC<SimilarProjectsProps> = ({
                 {loading ? (
                     <Loading />
                 ) : projects.length === 0 ? (
-                    <div className="text-gray-500">
-                        No Similar Projects
-                    </div>
+                    <NoData message="No Similar Projects" />
                 ) : (
                     <div className="flex flex-wrap justify-center gap-8">
                         {projects.map((project, index) => (

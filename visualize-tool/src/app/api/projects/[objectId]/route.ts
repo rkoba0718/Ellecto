@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: { params: { objectId: string
         const project = await collection.findOne({ _id: new ObjectId(objectId) });
 
         if (!project) {
-            return NextResponse.json({ message: 'Project not found' }, { status: 404 });
+            return NextResponse.json(null, { status: 404 });
         }
 
         const dependencies = project['Build-Depends'] ? project['Build-Depends'] : undefined;

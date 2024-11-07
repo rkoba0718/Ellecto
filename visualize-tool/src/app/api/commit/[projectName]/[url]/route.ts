@@ -19,6 +19,8 @@ export async function GET(req: NextRequest, { params }: { params: { projectName:
             ? await fetchSalsaDebianCommitData(url, lastFetchDate)
             : null;
 
+        if (allCommits === null) return (null)
+
         const commitDate = extractCommitDate(allCommits, url);
         const monthlyCommits = countMonthlyCommits(commitDate);
         const newCacheData = { ...cacheData, ...monthlyCommits };

@@ -22,8 +22,7 @@
     "react-dom": "^18",
     "react-force-graph": "^1.44.6",
     "recharts": "^2.13.2",
-    "recoil": "^0.7.7",
-    "recoil-persist": "^5.1.0"
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
     "@types/node": "^20.16.12",

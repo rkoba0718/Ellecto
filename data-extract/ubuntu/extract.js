@@ -35,12 +35,23 @@ const KEYS = [
 	'built-using',
 	'rules-requires-root',
 	'testsuite',
+  'build-depends-arch',
+  'build-depends-indep',
+  'build-conflicts',
+  'build-conflicts-arch',
+  'build-conflicts-indep',
+  'package-type',
+  'kernel-version',
+  'installer-menu-item',
+  'enhances',
 ];
 
 const KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE = [
   'depends',
   'pre-depends',
   'build-depends',
+  'build-depends-arch',
+  'build-depends-indep',
   'recommends',
   'suggests',
 ];
@@ -51,7 +62,11 @@ const KEYS_WHICH_VALUES_SPLIT_COMMA = [
   'conflicts',
   'replaces',
   'provides',
-  'built-using'
+  'built-using',
+  'build-conflicts',
+  'build-conflicts-arch',
+  'build-conflicts-indep',
+  'enhances',
 ];
 
 const insertData = (currentPackage, key, value, package_flag, package_number) => {
@@ -186,6 +201,18 @@ const parseControlFile = (controlFileContent, package_name) => {
             summary: '',
             detail: ''
           };
+        } else if (previousKey === 'Uploaders') {
+          const length = values.length;
+          for (let i = 0; i < length; i++) {
+            const [name, remain] = values[i].split(' <');
+            const email = remain.split('>')[0];
+            addData(currentPackage, 'Maintainers', `Uploaders${i+1}`,{
+              Name: name,
+              Email: email
+            });
+          }
+          previousKey = '';
+          values = [];
         } else if (KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE.includes(previousKey.toLowerCase())
           || KEYS_WHICH_VALUES_SPLIT_COMMA.includes(previousKey.toLowerCase())) {
             const out = separateName_Version_Operator_Architecture(values);
@@ -204,7 +231,31 @@ const parseControlFile = (controlFileContent, package_name) => {
     }
 
     const line = lines[i];
-    const [key, value] = line.split(': ').map(part => part.trim());
+    // 読み込み行を":"で分割，key, valueは下の2個のif節内以外では変更されない
+    let [key, value, ...remains] = line.split(':').map(part => part.trim());
+    if (!KEYS.includes(key.toLowerCase()) && value) {// 分割した最初の文字列がKEYS配列にない文字列かつvalueが存在する時の処理
+      // key: valueの状態ではないため，結合することで戻す
+      // Build-Depends
+      //  ${misc:Depends}, ,,, ←この行に対応
+      // などの処理に対応するためのif節
+      key = `${key}:${value}`;
+      if (remains.length !== 0) {
+        const length = remains.length;
+        for (let i = 0; i < length; i++) {
+          key = `${key}:${remains[i]}`;
+        }
+      }
+    }
+    if (remains.length !== 0) { // ":"が2回以上出現する場合の処理
+      // 2回目以降の文字列を全てvalueに結合
+      // Homepage: https://play0ad.com/
+      // などの文字列に対応するためのif節
+      const length = remains.length;
+      for (let i = 0; i < length; i++) {
+        value = `${value}:${remains[i]}`;
+      }
+    }
+
     if (KEYS.includes(key.toLowerCase())) {
       // 複数行に渡って書かれる可能性のあるデータを以前のキーに従って値を保存
       if (previousKey === 'Description') {
@@ -217,6 +268,18 @@ const parseControlFile = (controlFileContent, package_name) => {
           summary: '',
           detail: ''
         };
+      } else if (previousKey === 'Uploaders') {
+        const length = values.length;
+        for (let i = 0; i < length; i++) {
+          const [name, remain] = values[i].split(' <');
+          const email = remain.split('>')[0];
+          addData(currentPackage, 'Maintainers', `Uploaders${i+1}`,{
+            Name: name,
+            Email: email
+          });
+        }
+        previousKey = '';
+        values = [];
       } else if (KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE.includes(previousKey.toLowerCase())
         || KEYS_WHICH_VALUES_SPLIT_COMMA.includes(previousKey.toLowerCase())) {
           const out = separateName_Version_Operator_Architecture(values);
@@ -225,7 +288,7 @@ const parseControlFile = (controlFileContent, package_name) => {
           values = [];
       }
 
-      if (key.includes('Maintainer') || key === 'Uploaders') {
+      if (key.includes('Maintainer')) {
         const [name, remain] = value.split(' <');
         const email = remain.split('>')[0];
         addData(currentPackage, 'Maintainers', key,{
@@ -241,6 +304,8 @@ const parseControlFile = (controlFileContent, package_name) => {
           summary: value,
           detail: ''
         };
+      } else if (key === 'Uploaders') {
+        pushValuesAfterSplitComma(value, values);
       } else if (key === 'Package') {
         // Packageフィールドがない場合，作成
         if (currentPackage[key] === undefined) {
@@ -263,6 +328,8 @@ const parseControlFile = (controlFileContent, package_name) => {
           ...description_values,
           detail: `${description_values.detail} ${key}`
         };
+      } else if (previousKey === 'Uploaders') {
+        pushValuesAfterSplitComma(key, values);
       } else if (KEYS_WHICH_VALUES_SPLIT_COMMA_OR_PIPE.includes(previousKey.toLowerCase())) {
         pushValuesAfterSplitCommaAndPipe(key, values);
       } else if (KEYS_WHICH_VALUES_SPLIT_COMMA.includes(previousKey.toLowerCase())) {

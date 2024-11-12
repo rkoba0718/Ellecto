@@ -14,9 +14,7 @@ const KEYS_HAVE_ONE_ELEMENT = [
 ];
 
 const KEYS_HAVE_MULTIPLE_ELEMENT = [
-    'Maintainer',
-    'Uploaders',
-    'XSBC-Original-Maintainer',
+    'Maintainers',
     'URL'
 ];
 
@@ -137,17 +135,19 @@ async function main() {
                         }
                     } else if (KEYS_HAVE_MULTIPLE_ELEMENT.includes(key)) {
                         // TODO: リファクタリング
-                        if (key === 'Maintainer' || key === 'Uploaders' || key === 'XSBC-Original-Maintainer') {
-                            const accumulate_value = value.Maintainer;
-                            const find_value = findValueInDictionary(dictionary_values, accumulate_value, repository_ids);
-                            if (find_value === null) {
-                                dictionary += generateNotGraphString(node_id, accumulate_value);
-                                graph += generateGraphString(node_id, name_id);
-                                dictionary_values.push(accumulate_value);
-                                node_id++;
-                            } else { // 既にdictionaryに存在する場合は，Graphにのみ追加
-                                graph += generateGraphString(find_value.index, name_id);
-                            }
+                        if (key === 'Maintainers') {
+                            Object.keys(value).map((k) => {
+                                const accumulate_value = value[k].Name;
+                                const find_value = findValueInDictionary(dictionary_values, accumulate_value, repository_ids);
+                                if (find_value === null) {
+                                    dictionary += generateNotGraphString(node_id, accumulate_value);
+                                    graph += generateGraphString(node_id, name_id);
+                                    dictionary_values.push(accumulate_value);
+                                    node_id++;
+                                } else { // 既にdictionaryに存在する場合は，Graphにのみ追加
+                                    graph += generateGraphString(find_value.index, name_id);
+                                }
+                            })
                         } else if (key === 'URL') {
                             Object.keys(value).map((k) => {
                                 const accumulate_value = value[k];

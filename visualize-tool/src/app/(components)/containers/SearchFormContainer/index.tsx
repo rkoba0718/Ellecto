@@ -43,12 +43,15 @@ const SearchFormContainer: React.FC = () => {
                     }
                 })
             });
+            if (!response.ok) {
+                throw new Error('Search failed');
+            }
             const data = await response.json();
             setResult(data);
             router.push('/projects');
         } catch (error) {
-            // TODO: エラー処理
             console.log('Error searching projects:', error);
+            router.push('/searchfailed');
         }
     };
 

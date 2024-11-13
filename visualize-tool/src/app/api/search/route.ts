@@ -9,7 +9,6 @@ export async function POST(request: Request) {
         const results = await searchProjects(searchTerm, language, license, weight);
         return NextResponse.json(results, { status: 200 });
     } catch (error) {
-        // TODO: エラー処理
         console.error("Error searching projects:", error);
         return NextResponse.json({ message: "Error searching projects" }, { status: 500 });
     }

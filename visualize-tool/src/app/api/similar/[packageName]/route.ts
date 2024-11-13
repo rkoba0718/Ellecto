@@ -11,8 +11,8 @@ export async function GET(req: Request, { params }: { params: { packageName: str
 
         return NextResponse.json(projectDetails);
     } catch (error) {
-        // TODO: エラー処理
         console.error("Error fetching similar projects:", error);
-        return NextResponse.json({ error: "Failed to fetch similar projects" }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 }

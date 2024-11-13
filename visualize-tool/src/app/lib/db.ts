@@ -100,7 +100,7 @@ export async function getSimilarProjects(packageName: string): Promise<string[]>
 
     // 類似度データを取得し、上位5件のキー（プロジェクト名）を抽出
     const similarityData = await collection.findOne({ Name: packageName });
-    if (!similarityData) return [];
+    if (!similarityData) throw new Error(`${packageName}'s similar data not found`);
 
     // 類似度が高い順にソートし、Top5を取得
     const sortedProjectNames = Object.entries(similarityData)

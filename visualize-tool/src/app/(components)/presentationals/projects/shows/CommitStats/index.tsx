@@ -3,11 +3,14 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
+import { Error as ErrorType } from "@/app/types/Error";
 import Loading from "@/app/(components)/common/presentationals/Loading";
+import Error from "@/app/(components)/common/presentationals/Error";
 import NoData from "@/app/(components)/common/presentationals/NoData";
 
 type CommitStatsProps = {
     loading: boolean;
+    error: ErrorType | null;
     graphData: { month: string; commits: number }[];
     totalCommits: number;
     firstCommitDate: string;
@@ -16,6 +19,7 @@ type CommitStatsProps = {
 
 const CommitStats: React.FC<CommitStatsProps> = ({
     loading,
+    error,
     graphData,
     totalCommits,
     firstCommitDate,
@@ -26,6 +30,8 @@ const CommitStats: React.FC<CommitStatsProps> = ({
             <h2 className="font-bold text-xl mb-2">Activity</h2>
             {loading ? (
                 <Loading />
+            ) : error ? (
+                <Error message={`${error.status} ${error.message}`} />
             ) : (
                 <>
                     {graphData.length === 0 ? (

@@ -29,8 +29,8 @@ export async function GET(req: NextRequest, { params }: { params: { projectName:
 
         return NextResponse.json({ newCacheData, totalCommits }, { status: 200 });
     } catch (error) {
-        // TODO: エラー処理
         console.error("Error fetching or caching commit data:", error);
-        return NextResponse.json({ error: "Error fetching commit data" }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : "Error fetching commit data";
+        return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 };

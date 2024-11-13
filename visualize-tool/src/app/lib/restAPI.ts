@@ -29,9 +29,8 @@ export async function fetchGithubCommitData(repoUrl: string, lastFetchDate?: Dat
                 page++;
             }
         } catch (error) {
-            // TODO: エラー処理
             console.error('Error fetching commits:', error);
-            break;
+            throw new Error('Error fetching github commit data');
         }
     }
 
@@ -84,9 +83,8 @@ export async function fetchSalsaDebianCommitData(repoUrl: string, lastFetchDate?
             hasMore = commits.length === perPage;
             page++;
         } catch (error) {
-            // TODO: エラー処理
             console.error('Error fetching commits:', error);
-            break;
+            throw new Error('Error fetching salsa debian commit data');
         }
     }
 

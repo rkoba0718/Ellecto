@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
+import { Error } from "@/app/types/Error";
 import CommitStats from "@/app/(components)/presentationals/projects/shows/CommitStats";
 
 type CommitStatsContainerProps = {
@@ -16,6 +17,7 @@ const CommitStatsContainer: React.FC<CommitStatsContainerProps> = ({
     const [commitData, setCommitData] = useState<{ [month: string]: number } | null>(null);
     const [loading, setLoading] = useState(true);
     const [totalCommits, setTotalCommits] = useState(0);
+    const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,12 +32,17 @@ const CommitStatsContainer: React.FC<CommitStatsContainerProps> = ({
                     setLoading(false);
                     return;
                 };
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setError({ status: response.status, message: errorData.message });
+                    return;
+                }
                 const data = await response.json();
                 setCommitData(data.newCacheData);
                 setTotalCommits(data.totalCommits);
             } catch (error) {
-                // TODO: エラー処理
                 console.error("Error fetching community data:", error);
+                setError({ status: 500, message: "An unexpected error occurred." });
             } finally {
                 setLoading(false);
             }
@@ -61,6 +68,7 @@ const CommitStatsContainer: React.FC<CommitStatsContainerProps> = ({
     return (
         <CommitStats
             loading={loading}
+            error={error}
             graphData={graphData}
             totalCommits={totalCommits}
             firstCommitDate={firstCommitDate}

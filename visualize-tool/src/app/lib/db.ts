@@ -24,33 +24,31 @@ export async function searchProjects(searchTerm: string, language: string, licen
     const query: any = {};
 
     // クエリ作成（複数キーワードに対応するため分割）
-    if (searchTerm) {
-        const keywords = searchTerm.split(' ').map((term: string) => ({
-            $or: [
-                { Name: { $regex: escapeRegExp(term), $options: 'i' } },
-                { Section: { $regex: escapeRegExp(term), $options: 'i' } },
-                { 'Description.summary': { $regex: escapeRegExp(term), $options: 'i' } },
-                { 'Description.detail': { $regex: escapeRegExp(term), $options: 'i' } }
-            ]
-        }));
-        const languages = language
-            ? language.split(' ').map((lang: string) => ({
-                    $or: [
-                        { 'Description.summary': { $regex: escapeRegExp(lang), $options: 'i' } },
-                        { 'Description.detail': { $regex: escapeRegExp(lang), $options: 'i' } },
-                        { 'Language.Lang1.Name': { $regex: escapeRegExp(lang), $options: 'i' } }
-                    ]
-                }))
-                : [];
-        const licenses = license
-            ? license.split(' ').map((lic: string) => ({ License: { $regex: lic, $options: 'i' } }))
+    const keywords = searchTerm.split(' ').map((term: string) => ({
+        $or: [
+            { Name: { $regex: escapeRegExp(term), $options: 'i' } },
+            { Section: { $regex: escapeRegExp(term), $options: 'i' } },
+            { 'Description.summary': { $regex: escapeRegExp(term), $options: 'i' } },
+            { 'Description.detail': { $regex: escapeRegExp(term), $options: 'i' } }
+        ]
+    }));
+    const languages = language !== ''
+        ? language.split(' ').map((lang: string) => ({
+                $or: [
+                    { 'Description.summary': { $regex: escapeRegExp(lang), $options: 'i' } },
+                    { 'Description.detail': { $regex: escapeRegExp(lang), $options: 'i' } },
+                    { 'Language.Lang1.Name': { $regex: escapeRegExp(lang), $options: 'i' } }
+                ]
+            }))
             : [];
-        query.$or = [
-            ...keywords,
-            ...languages,
-            ...licenses,
-        ];
-    }
+    const licenses = license !== ''
+        ? license.split(' ').map((lic: string) => ({ License: { $regex: lic, $options: 'i' } }))
+        : [];
+    query.$or = [
+        ...keywords,
+        ...languages,
+        ...licenses,
+    ];
 
     const results = await collection.find(query).toArray();
 
@@ -59,19 +57,17 @@ export async function searchProjects(searchTerm: string, language: string, licen
         let score = 0;
 
         // 検索ワードのスコア加算
-        if (searchTerm) {
-            const keywords = searchTerm.split(' ');
-            keywords.map((keyword) => {
-                const escapeKeyword = escapeRegExp(keyword);
-                if (new RegExp(escapeKeyword, 'i').test(project.Name)) score += weight.searchTerm * 2;
-                if (new RegExp(escapeKeyword, 'i').test(project.Section)) score += weight.searchTerm * 1;
-                if (new RegExp(escapeKeyword, 'i').test(project.Description['summary'])) score += weight.searchTerm * 2;
-                if (new RegExp(escapeKeyword, 'i').test(project.Description['detail'])) score += weight.searchTerm * 1;
-            })
-        }
+        const keywords = searchTerm.split(' ');
+        keywords.map((keyword) => {
+            const escapeKeyword = escapeRegExp(keyword);
+            if (new RegExp(escapeKeyword, 'i').test(project.Name)) score += weight.searchTerm * 2;
+            if (new RegExp(escapeKeyword, 'i').test(project.Section)) score += weight.searchTerm * 1;
+            if (new RegExp(escapeKeyword, 'i').test(project.Description['summary'])) score += weight.searchTerm * 2;
+            if (new RegExp(escapeKeyword, 'i').test(project.Description['detail'])) score += weight.searchTerm * 1;
+        })
 
         // 言語のスコア加算
-        if (language) {
+        if (language !== '') {
             const languages = language.split(' ');
             languages.map((lang) => {
                 const escapeLang = escapeRegExp(lang);
@@ -82,7 +78,7 @@ export async function searchProjects(searchTerm: string, language: string, licen
         }
 
         // ライセンスのスコア加算
-        if (license) {
+        if (license !== '') {
             const licenses = license.split(' ');
             licenses.map((lic) => {
                 const escapeLic = escapeRegExp(lic);

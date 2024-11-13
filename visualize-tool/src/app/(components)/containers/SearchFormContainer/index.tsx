@@ -12,8 +12,9 @@ const SearchFormContainer: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [language, setLanguage] = useState('');
     const [license, setLicense] = useState('');
-    const [showOptions, setShowOptions] = React.useState(false);
+    const [showOptions, setShowOptions] = useState(false);
     const [result, setResult] = useRecoilState(searchResultState);
+    const [error, setError] = useState(false);
 
     // 各検索条件の重み
     const [searchTermWeight, setSearchTermWeight] = useState(1);
@@ -23,6 +24,7 @@ const SearchFormContainer: React.FC = () => {
     const handleSearchSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (searchTerm === '') {
+            setError(true);
             return;
         }
 
@@ -59,6 +61,7 @@ const SearchFormContainer: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             handleSearchSubmit={handleSearchSubmit}
+            error={error}
             language={language}
             setLanguage={setLanguage}
             license={license}

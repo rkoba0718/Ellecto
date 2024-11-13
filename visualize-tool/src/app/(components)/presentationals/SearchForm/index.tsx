@@ -33,6 +33,7 @@ type SearchFormProps = {
     searchTerm: string;
     setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
     handleSearchSubmit: (e: React.FormEvent) => void;
+    error: boolean;
     language: string;
     setLanguage: React.Dispatch<React.SetStateAction<string>>;
     license: string;
@@ -51,6 +52,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
     searchTerm,
     setSearchTerm,
     handleSearchSubmit,
+    error,
     language,
     setLanguage,
     license,
@@ -66,16 +68,19 @@ const SearchForm: React.FC<SearchFormProps> = ({
 }) => {
     return(
         <div className="flex flex-col items-center pt-5">
+            {error && (
+                <p className="text-red-700 text-sm mb-4">Keyword is required</p>
+            )}
             <form
                 onSubmit={handleSearchSubmit}
-                className="flex bg-gray-100 rounded-full px-4 py-2 mb-5 shadow-lg w-1/2"
+                className={`flex bg-gray-100 rounded-full px-4 py-2 mb-5 shadow-lg w-1/2 ${error ? 'border-2 border-red-700' : ''}`}
             >
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search OSS Project ..."
-                    className="bg-transparent outline-none text-gray-600 px-4 py-2 flex-grow"
+                    className={`bg-transparent outline-none text-gray-600 px-4 py-2 flex-grow ${error ? '' : ''}`}
                 />
                 <button type="submit" className="text-gray-500">
                     <FontAwesomeIcon icon={faSearch} />

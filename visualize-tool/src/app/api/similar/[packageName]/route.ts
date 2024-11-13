@@ -12,7 +12,7 @@ export async function GET(req: Request, { params }: { params: { packageName: str
         return NextResponse.json(projectDetails);
     } catch (error) {
         console.error("Error fetching similar projects:", error);
-        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        const errorMessage = error instanceof Error ? error.message : "Error fetching similar project data";
         return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 }

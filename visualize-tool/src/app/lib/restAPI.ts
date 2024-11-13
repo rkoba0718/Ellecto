@@ -41,19 +41,23 @@ export async function fetchGithubContributorData(repoUrl: string) {
     const repoName = repoUrl.split("github.com/")[1];
     const octokit = new Octokit({ auth: GITHUB_TOKEN });
 
-    const contributorData = await octokit.request(`GET /repos/${repoName}/contributors`, {
-        per_page: 5,
-    });
+    try {
+        const contributorData = await octokit.request(`GET /repos/${repoName}/contributors`, {
+            per_page: 5,
+        });
+        const detailData = contributorData.data.map((contributor: any) => ({
+            name: contributor.login,
+            email: null,
+            contributions: contributor.contributions,
+            html_url: contributor.html_url,
+            avatar_url: contributor.avatar_url
+        }));
+        return detailData;
+    } catch (error) {
+        console.error('Error fetching contributors:', error);
+        throw new Error('Error fetching github contributor data');
+    }
 
-    const detailData = contributorData.data.map((contributor: any) => ({
-        name: contributor.login,
-        email: null,
-        contributions: contributor.contributions,
-        html_url: contributor.html_url,
-        avatar_url: contributor.avatar_url
-    }));
-
-    return detailData;
 };
 
 export async function fetchSalsaDebianCommitData(repoUrl: string, lastFetchDate?: Date) {
@@ -94,38 +98,36 @@ export async function fetchSalsaDebianCommitData(repoUrl: string, lastFetchDate?
 export async function fetchSalsaDebianContributorData(repoUrl: string) {
     const repoName = repoUrl.split("salsa.debian.org/")[1];
 
-    const contributorData = await axios.get(
-        `https://salsa.debian.org/api/v4/projects/${encodeURIComponent(repoName)}/repository/contributors?per_page=100`
-    );
+    try {
+        const contributorData = await axios.get(
+            `https://salsa.debian.org/api/v4/projects/${encodeURIComponent(repoName)}/repository/contributors?per_page=100`
+        );
 
-    const sortedData = contributorData.data.sort((a: any, b: any) => b.commits - a.commits).slice(0, 5);
+        const sortedData = contributorData.data.sort((a: any, b: any) => b.commits - a.commits).slice(0, 5);
 
-    const contributorDetails = await Promise.all(
-        sortedData.map(async (contributor: any) => {
-            try {
-                const avatar_url = await axios.get(
-                    `https://salsa.debian.org/api/v4/avatar?email=${encodeURIComponent(contributor.email)}`
-                );
-                return {
-                    name: contributor.name,
-                    email: contributor.email,
-                    contributions: contributor.commits,
-                    html_url: null,
-                    avatar_url: avatar_url.data['avatar_url']
-                };
-            } catch (error) {
-                // TODO: エラー処理
-                console.error(`Error fetching user data for ${contributor.name}:`, error);
-                return {
-                    name: contributor.name,
-                    email: contributor.email,
-                    contributions: contributor.commits,
-                    html_url: null,
-                    avatar_url: null,
-                };
-            }
-        })
-    )
+        const contributorDetails = await Promise.all(
+            sortedData.map(async (contributor: any) => {
+                try {
+                    const avatar_url = await axios.get(
+                        `https://salsa.debian.org/api/v4/avatar?email=${encodeURIComponent(contributor.email)}`
+                    );
+                    return {
+                        name: contributor.name,
+                        email: contributor.email,
+                        contributions: contributor.commits,
+                        html_url: null,
+                        avatar_url: avatar_url.data['avatar_url']
+                    };
+                } catch (error) {
+                    console.error(`Error fetching user data for ${contributor.name}:`, error);
+                    throw new Error('Error fetching salsa debian contributor data');
+                }
+            })
+        )
 
-    return contributorDetails;
+        return contributorDetails;
+    } catch (error) {
+        console.error(`Error fetching user data:`, error);
+        throw new Error('Error fetching salsa debian contributor data');
+    }
 };

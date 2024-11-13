@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
+import { Error as ErrorType } from "@/app/types/Error";
 import { fetchGithubContributorData, fetchSalsaDebianContributorData } from "@/app/lib/restAPI";
 import { Contributor } from "@/app/types/Contributor";
 import Contribution from "@/app/(components)/presentationals/projects/shows/Contribution";
@@ -15,6 +16,7 @@ const ContributionContainer: React.FC<ContributionContainerProps> = ({
 }) => {
     const [contributorData, setContributorData] = useState<Contributor[] | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<ErrorType | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,8 +37,9 @@ const ContributionContainer: React.FC<ContributionContainerProps> = ({
                 };
                 setContributorData(data);
             } catch (error) {
-                // TODO: エラー処理
                 console.error("Error fetching community data:", error);
+                const errorMessage = error instanceof Error ? error.message : "Error fetching contribution data";
+                setError({ status: 500, message: errorMessage });
             } finally {
                 setLoading(false);
             }
@@ -48,6 +51,7 @@ const ContributionContainer: React.FC<ContributionContainerProps> = ({
     return (
         <Contribution
             loading={loading}
+            error={error}
             contributors={contributorData}
         />
     );

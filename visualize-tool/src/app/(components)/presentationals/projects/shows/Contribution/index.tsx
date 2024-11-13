@@ -2,17 +2,21 @@
 
 import React from "react";
 
+import { Error as ErrorType } from "@/app/types/Error";
 import { Contributor } from "@/app/types/Contributor";
 import Loading from "@/app/(components)/common/presentationals/Loading";
 import NoData from "@/app/(components)/common/presentationals/NoData";
+import Error from "@/app/(components)/common/presentationals/Error";
 
 type ContributionProps = {
     loading: boolean;
+    error: ErrorType | null;
     contributors: Contributor[] | null;
 };
 
 const Contribution: React.FC<ContributionProps> = ({
     loading,
+    error,
     contributors
 }) => {
     return (
@@ -20,6 +24,8 @@ const Contribution: React.FC<ContributionProps> = ({
             <h2 className="font-bold text-xl mb-2">Top Contributors</h2>
             {loading ? (
                 <Loading />
+            ) : error ? (
+                <Error message={`${error.status} ${error.message}`} />
             ) : (
                 <>
                     {contributors === null ? (

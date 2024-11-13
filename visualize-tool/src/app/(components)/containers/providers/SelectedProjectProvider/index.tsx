@@ -8,6 +8,7 @@ import { ProjectInfo } from '@/app/types/ProjectInfo';
 type SelectedProjectProviderProps = {
   children: (
     loading: boolean,
+    error: { status: number; message: string } | null,
     project: ProjectInfo | null,
     transitiveProjects: ProjectInfo[],
   ) => React.ReactNode;
@@ -18,7 +19,7 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
   const [project, setProject] = useState<ProjectInfo | null>(null);
   const [transitiveProjects, setTransitiveProjects] = useState<ProjectInfo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<{ status: number; message: string } | null>(null);
 
   useEffect(() => {
     if (!objectId) return;
@@ -26,6 +27,11 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
     const fetchProject = async () => {
       try {
         const response = await fetch(`/api/projects/${objectId}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          setError({ status: response.status, message: errorData.message });
+          return;
+        }
         const data = await response.json();
         if (data === null) {
           setProject(null);
@@ -34,7 +40,8 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
         setProject(data.project);
         setTransitiveProjects(data.transitiveDependencyProjects);
       } catch (err) {
-        setError(true);
+        console.error("Error fetching project data:", err);
+        setError({ status: 500, message: "An unexpected error occurred." });
       } finally {
         setLoading(false);
       }
@@ -42,12 +49,7 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
     fetchProject();
   }, [objectId]);
 
-  // TODO: Error表示
-  if (error) {
-    return <div>Failed to load project data.</div>;
-  }
-
-  return <>{children(loading, project, transitiveProjects)}</>;
+  return <>{children(loading, error, project, transitiveProjects)}</>;
 };
 
 export default SelectedProjectProvider;

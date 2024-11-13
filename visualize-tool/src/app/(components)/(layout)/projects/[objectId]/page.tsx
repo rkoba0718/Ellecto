@@ -3,6 +3,7 @@
 import React from "react";
 
 import Loading from "@/app/(components)/common/presentationals/Loading";
+import Error from "@/app/(components)/common/presentationals/Error";
 import NoData from "@/app/(components)/common/presentationals/NoData";
 import SelectedProjectProvider from "@/app/(components)/containers/providers/SelectedProjectProvider";
 import ProjectTitleContainer from "@/app/(components)/containers/projects/shows/ProjectTitleContainer";
@@ -17,10 +18,12 @@ import ContributionContainer from "@/app/(components)/containers/projects/shows/
 const ProjectShow: React.FC = () => {
     return (
         <SelectedProjectProvider >
-            {(loading, project, transitiveProjects) => (
+            {(loading, error, project, transitiveProjects) => (
                 <div className="container mx-auto py-10 px-10">
                     {loading ? (
                         <Loading />
+                    ) : error ? (
+                        <Error message={`${error.status} ${error.message}`} />
                     ) : (
                         project === null ? (
                             <NoData message="Failed to get project data" />

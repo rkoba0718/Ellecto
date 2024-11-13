@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: { params: { objectId: string
         const project = await collection.findOne({ _id: new ObjectId(objectId) });
 
         if (!project) {
-            return NextResponse.json(null, { status: 404 });
+            return NextResponse.json({ message: `No Project with objectId ${objectId}` }, { status: 404 });
         }
 
         const dependencies = project['Build-Depends'] ? project['Build-Depends'] : undefined;
@@ -29,7 +29,6 @@ export async function GET(req: Request, { params }: { params: { objectId: string
 
         return NextResponse.json({ project, transitiveDependencyProjects }, { status: 200 });
     } catch (error) {
-        // TODO: エラー処理
         console.error('Error fetching project:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }

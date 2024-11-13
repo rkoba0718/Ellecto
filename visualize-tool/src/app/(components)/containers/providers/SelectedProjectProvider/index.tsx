@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
 import { ProjectInfo } from '@/app/types/ProjectInfo';
+import { Error } from '@/app/types/Error';
 
 type SelectedProjectProviderProps = {
   children: (
     loading: boolean,
-    error: { status: number; message: string } | null,
+    error: Error | null,
     project: ProjectInfo | null,
     transitiveProjects: ProjectInfo[],
   ) => React.ReactNode;
@@ -19,7 +20,7 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
   const [project, setProject] = useState<ProjectInfo | null>(null);
   const [transitiveProjects, setTransitiveProjects] = useState<ProjectInfo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<{ status: number; message: string } | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     if (!objectId) return;

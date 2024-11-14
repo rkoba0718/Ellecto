@@ -134,34 +134,18 @@ async function main() {
                             graph += generateGraphString(find_value.index, name_id);
                         }
                     } else if (KEYS_HAVE_MULTIPLE_ELEMENT.includes(key)) {
-                        // TODO: リファクタリング
-                        if (key === 'Maintainers') {
-                            Object.keys(value).map((k) => {
-                                const accumulate_value = value[k].Name;
-                                const find_value = findValueInDictionary(dictionary_values, accumulate_value, repository_ids);
-                                if (find_value === null) {
-                                    dictionary += generateNotGraphString(node_id, accumulate_value);
-                                    graph += generateGraphString(node_id, name_id);
-                                    dictionary_values.push(accumulate_value);
-                                    node_id++;
-                                } else { // 既にdictionaryに存在する場合は，Graphにのみ追加
-                                    graph += generateGraphString(find_value.index, name_id);
-                                }
-                            })
-                        } else if (key === 'URL') {
-                            Object.keys(value).map((k) => {
-                                const accumulate_value = value[k];
-                                const find_value = findValueInDictionary(dictionary_values, accumulate_value, repository_ids);
-                                if (find_value === null) {
-                                    dictionary += generateNotGraphString(node_id, accumulate_value);
-                                    graph += generateGraphString(node_id, name_id);
-                                    dictionary_values.push(accumulate_value);
-                                    node_id++;
-                                } else { // 既にdictionaryに存在する場合は，Graphにのみ追加
-                                    graph += generateGraphString(find_value.index, name_id);
-                                }
-                            })
-                        }
+                        Object.keys(value).map((k) => {
+                            const accumulate_value = key === 'Maintainers' ? value[k].Name : value[k];
+                            const find_value = findValueInDictionary(dictionary_values, accumulate_value, repository_ids);
+                            if (find_value === null) {
+                                dictionary += generateNotGraphString(node_id, accumulate_value);
+                                graph += generateGraphString(node_id, name_id);
+                                dictionary_values.push(accumulate_value);
+                                node_id++;
+                            } else { // 既にdictionaryに存在する場合は，Graphにのみ追加
+                                graph += generateGraphString(find_value.index, name_id);
+                            }
+                        })
                     } else if (KEYS_HAVE_OBJECT.includes(key)) {
                         value.map((v) => {
                             const accumulate_value = `${v.Name}${v.Operator !== null ? ` ${v.Operator}` : ''}${v.Version !== null ? ` ${v.Version}` : ''}`;

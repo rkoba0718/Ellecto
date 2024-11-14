@@ -1,7 +1,7 @@
 "use client";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlassPlus, faInfoCircle, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 export default function Header() {
     return (
@@ -12,6 +12,10 @@ export default function Header() {
                 </div>
 
                 <div>
+                    <a href="/" className="hover:text-gray-200 pr-2.5">
+                        <FontAwesomeIcon icon={faMagnifyingGlassPlus} className="pr-1" />
+                        Search
+                    </a>
                     <a href="/about" className="hover:text-gray-200 pr-2.5">
                         <FontAwesomeIcon icon={faInfoCircle} className="pr-1" />
                         About

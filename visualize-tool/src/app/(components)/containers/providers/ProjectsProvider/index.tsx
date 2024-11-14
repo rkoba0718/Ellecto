@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
-import { useRouter } from 'next/navigation';
 
 import { ProjectInfo } from '@/app/types/ProjectInfo';
 import { searchResultState } from '@/app/lib/atoms';
@@ -24,7 +23,6 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
   const [filteredResult, setFilteredResult] = useState<ProjectInfo[]>(result);
   const [sort, setSort] = useState('relevance');
   const [filters, setFilters] = useState({ license: '', language: '' });
-  const navigation = useRouter();
 
   // フィルタとソートの適用
   const applyFiltersAndSort: (filters: { license: string; language: string }, sort: string) => void = (filters: { license: string; language: string }, sort: string) => {
@@ -57,24 +55,6 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
 
   const startIndex = (currentPage - 1) * projectsPerPage;
   const currentResult = filteredResult.slice(startIndex, startIndex + projectsPerPage);
-
-  // TODO: URL処理，戻るボタンで値の切り替え
-  // URLからクエリパラメータを取得し、初期ページを設定
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const skip = params.get('skip');
-
-  //   if (skip && !isNaN(Number(skip))) {
-  //     const newPage = Math.ceil(Number(skip) / projectsPerPage);
-  //     setCurrentPage(newPage);
-  //   }
-  // }, []);
-
-  // ページが変わるときにURLのクエリパラメータを更新
-  useEffect(() => {
-    const skip = (currentPage - 1) * projectsPerPage;
-    navigation.push(`/projects?skip=${skip}`);
-  }, [currentPage, navigation]);
 
   return <>{children(currentResult, currentPage, setCurrentPage, filteredResult.length, applyFiltersAndSort)}</>
 };

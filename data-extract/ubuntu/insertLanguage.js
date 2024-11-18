@@ -1,11 +1,5 @@
 const { MongoClient } = require('mongodb');
-
-// const url = 'mongodb://root:password@oss-project-map-mongo-1:27017'; // For production environment
-const url = 'mongodb://root:password@ossprojectmap-mongo-1:27017'; // For Test environment
-// const url = 'mongodb://root:password@localhost:27017'; // For debug
-// const dbName = 'ProjSelector';
-const dbName = 'testDB'; // For Test environment
-const collectionName = 'ubuntu';
+const { config } = require('./config');
 
 const calculateLanguagePercentage = (languageData) => {
     const loc = languageData.SUM.code;
@@ -57,7 +51,7 @@ const calculateLanguagePercentage = (languageData) => {
 };
 
 async function insertLanguageInDB(packageName, languagePercentages, loc) {
-    const client = new MongoClient(url);
+    const client = new MongoClient(config.url);
 
     try {
         // MongoDBに接続
@@ -65,8 +59,8 @@ async function insertLanguageInDB(packageName, languagePercentages, loc) {
         console.log('Connected to the database');
 
         // データベースとコレクションを取得
-        const db = client.db(dbName);
-        const collection = db.collection(collectionName);
+        const db = client.db(config.dbName);
+        const collection = db.collection(config.collectionName);
 
         // packageNameに一致するデータを検索
         const filter = { Name: packageName };

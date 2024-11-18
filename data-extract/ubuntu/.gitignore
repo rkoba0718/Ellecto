@@ -1,11 +1,14 @@
-#入力ファイル
+# 入力ファイル
 input.txt
 
-#出力ファイル
+# 出力ファイル
 out/
 
-#testファイル
+# testファイル
 *test*
 
-#module
+# module
 node_module*/
+
+# 設定ファイル
+config.js

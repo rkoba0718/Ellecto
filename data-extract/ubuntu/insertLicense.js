@@ -1,13 +1,7 @@
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
-
-// const url = 'mongodb://root:password@oss-project-map-mongo-1:27017'; // For production environment
-const url = 'mongodb://root:password@ossprojectmap-mongo-1:27017'; // For Test environment
-// const url = 'mongodb://root:password@localhost:27017'; // For debug
-// const dbName = 'ProjSelector';
-const dbName = 'testDB'; // For Test environment
-const collectionName = 'ubuntu';
+const { config } = require('./config');
 
 // ライセンスの対応表（ライセンス名: 短識別子）
 // https://licenses.opensource.jp/ のサイトに載っているライセンスリストを参考に作成
@@ -147,7 +141,7 @@ async function extractLicenseInfo(sourceDir) {
 
 // MongoDBに接続し、ライセンス情報を更新する関数
 async function updateLicenseInDB(packageName, licenseInfo) {
-    const client = new MongoClient(url);
+    const client = new MongoClient(config.url);
 
     try {
         // MongoDBに接続
@@ -155,8 +149,8 @@ async function updateLicenseInDB(packageName, licenseInfo) {
         console.log('Connected to the database');
 
         // データベースとコレクションを取得
-        const db = client.db(dbName);
-        const collection = db.collection(collectionName);
+        const db = client.db(config.dbName);
+        const collection = db.collection(config.collectionName);
 
         // packageNameに一致するデータを検索
         const filter = { Name: packageName };

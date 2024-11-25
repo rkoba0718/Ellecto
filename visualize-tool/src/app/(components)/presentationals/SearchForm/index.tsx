@@ -79,7 +79,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search OSS Project ..."
+                    placeholder="Search OSS Project by keywords ex. name, function, ..."
                     className={`bg-transparent outline-none text-gray-600 px-4 py-2 flex-grow ${error ? '' : ''}`}
                 />
                 <button type="submit" className="text-gray-500">
@@ -102,7 +102,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
                             type="text"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
-                            placeholder="Type Language"
+                            placeholder="Type Language written in or available for"
                             className="w-full bg-white border border-gray-300 rounded px-3 py-2"
                         />
                     </div>

@@ -14,6 +14,7 @@ const SearchFormContainer: React.FC = () => {
     const [license, setLicense] = useState('');
     const [showOptions, setShowOptions] = useState(false);
     const [result, setResult] = useRecoilState(searchResultState);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
     // 各検索条件の重み
@@ -29,6 +30,7 @@ const SearchFormContainer: React.FC = () => {
         }
 
         try {
+            setLoading(true);
             const response = await fetch('/api/search', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -64,6 +66,7 @@ const SearchFormContainer: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             handleSearchSubmit={handleSearchSubmit}
+            loading={loading}
             error={error}
             language={language}
             setLanguage={setLanguage}

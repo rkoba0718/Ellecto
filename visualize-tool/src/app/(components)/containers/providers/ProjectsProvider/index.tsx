@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
+import { useRouter } from 'next/navigation';
 
 import { ProjectInfo } from '@/app/types/ProjectInfo';
 import { searchResultState } from '@/app/lib/atoms';
@@ -23,6 +24,7 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
   const [filteredResult, setFilteredResult] = useState<ProjectInfo[]>(result);
   const [sort, setSort] = useState('relevance');
   const [filters, setFilters] = useState({ license: '', language: '' });
+  const navigation = useRouter();
 
   // フィルタとソートの適用
   const applyFiltersAndSort: (filters: { license: string; language: string }, sort: string) => void = (filters: { license: string; language: string }, sort: string) => {
@@ -55,6 +57,11 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
 
   const startIndex = (currentPage - 1) * projectsPerPage;
   const currentResult = filteredResult.slice(startIndex, startIndex + projectsPerPage);
+
+  useEffect(() => {
+    const skip = (currentPage - 1) * projectsPerPage;
+    navigation.push(`/projects?skip=${skip}`);
+  }, [currentPage, navigation]);
 
   return <>{children(currentResult, currentPage, setCurrentPage, filteredResult.length, applyFiltersAndSort)}</>
 };

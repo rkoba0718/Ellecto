@@ -21,36 +21,35 @@ export async function searchProjects(searchTerm: string, language: string, licen
     const db = await connectToDatabase();
     const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
 
-    const query: any = {};
+    // キーワード正規表現を単語境界を緩和して作成
+    const keywordRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
+    const languageRegex = new RegExp(language.split(' ').join('|'), 'i');
+    const licenseRegex = new RegExp(license.split(' ').join('|'), 'i');
 
-    // クエリ作成（複数キーワードに対応するため分割）
-    const keywords = searchTerm.split(' ').map((term: string) => ({
-        $or: [
-            { Name: { $regex: escapeRegExp(term), $options: 'i' } },
-            { Section: { $regex: escapeRegExp(term), $options: 'i' } },
-            { 'Description.summary': { $regex: escapeRegExp(term), $options: 'i' } },
-            { 'Description.detail': { $regex: escapeRegExp(term), $options: 'i' } }
+    const query = {
+        $and: [
+            { $or: [
+                { Name: { $regex: keywordRegex } },
+                { Section: { $regex: keywordRegex } },
+                { 'Description.summary': { $regex: keywordRegex } },
+                { 'Description.detail': { $regex: keywordRegex } }
+            ]},
+            { $or: [
+                { 'Language.Lang1.Name': { $regex: languageRegex } },
+                { 'Description.summary': { $regex: languageRegex } },
+            ]},
+            { License: { $regex: licenseRegex } }
+        ],
+        // 機能を提供しないパッケージを除外
+        $nor: [
+            { Name: { $regex: '-doc$', $options: 'i' } },
+            { Name: { $regex: '-dev$', $options: 'i' } },
+            { Name: { $regex: '-data$', $options: 'i' } },
         ]
-    }));
-    const languages = language !== ''
-        ? language.split(' ').map((lang: string) => ({
-                $or: [
-                    { 'Description.summary': { $regex: escapeRegExp(lang), $options: 'i' } },
-                    { 'Description.detail': { $regex: escapeRegExp(lang), $options: 'i' } },
-                    { 'Language.Lang1.Name': { $regex: escapeRegExp(lang), $options: 'i' } }
-                ]
-            }))
-            : [];
-    const licenses = license !== ''
-        ? license.split(' ').map((lic: string) => ({ License: { $regex: lic, $options: 'i' } }))
-        : [];
-    query.$or = [
-        ...keywords,
-        ...languages,
-        ...licenses,
-    ];
+    };
 
-    const results = await collection.find(query).toArray();
+    const limit = 2000; // 制限を2000に設定
+    const results = await collection.find(query).limit(limit).toArray();
 
     // スコアリング処理
     const scoredResults = results.map((project) => {
@@ -60,11 +59,19 @@ export async function searchProjects(searchTerm: string, language: string, licen
         const keywords = searchTerm.split(' ');
         keywords.map((keyword) => {
             const escapeKeyword = escapeRegExp(keyword);
-            if (new RegExp(escapeKeyword, 'i').test(project.Name)) score += weight.searchTerm * 2;
+            if (new RegExp(escapeKeyword, 'i').test(project.Name)) score += weight.searchTerm * 1;
             if (new RegExp(escapeKeyword, 'i').test(project.Section)) score += weight.searchTerm * 1;
-            if (new RegExp(escapeKeyword, 'i').test(project.Description['summary'])) score += weight.searchTerm * 2;
+            if (new RegExp(escapeKeyword, 'i').test(project.Description['summary'])) score += weight.searchTerm * 3;
             if (new RegExp(escapeKeyword, 'i').test(project.Description['detail'])) score += weight.searchTerm * 1;
         })
+
+        // Description.summaryにすべてのキーワードが含まれる場合にさらにスコア加算
+        const allKeywordsInSummary = keywords.every((keyword) =>
+            new RegExp(escapeRegExp(keyword), 'i').test(project.Description['summary'])
+        );
+        if (allKeywordsInSummary) {
+            score += 1;
+        }
 
         // 言語のスコア加算
         if (language !== '') {
@@ -72,7 +79,6 @@ export async function searchProjects(searchTerm: string, language: string, licen
             languages.map((lang) => {
                 const escapeLang = escapeRegExp(lang);
                 if (new RegExp(escapeLang, 'i').test(project.Description['summary'])) score += weight.language * 1;
-                if (new RegExp(escapeLang, 'i').test(project.Description['detail'])) score += weight.language * 1;
                 if (new RegExp(escapeLang, 'i').test(project.Language.Lang1.Name)) score += weight.language * 1;
             })
         }

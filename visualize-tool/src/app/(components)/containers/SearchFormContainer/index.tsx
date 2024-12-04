@@ -12,7 +12,6 @@ const SearchFormContainer: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [language, setLanguage] = useState('');
     const [license, setLicense] = useState('');
-    const [showOptions, setShowOptions] = useState(false);
     const [result, setResult] = useRecoilState(searchResultState);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -57,10 +56,6 @@ const SearchFormContainer: React.FC = () => {
         }
     };
 
-    const onToggleOptionsClick = () => {
-        setShowOptions(!showOptions);
-    };
-
     return (
         <SearchForm
             searchTerm={searchTerm}
@@ -72,8 +67,6 @@ const SearchFormContainer: React.FC = () => {
             setLanguage={setLanguage}
             license={license}
             setLicense={setLicense}
-            showOptions={showOptions}
-            onToggleOptionsClick={onToggleOptionsClick}
             searchTermWeight={searchTermWeight}
             setSearchTermWeight={setSearchTermWeight}
             languageWeight={languageWeight}

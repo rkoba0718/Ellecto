@@ -7,6 +7,7 @@ import Error from "@/app/(components)/common/presentationals/Error";
 import NoData from "@/app/(components)/common/presentationals/NoData";
 import SelectedProjectProvider from "@/app/(components)/containers/providers/SelectedProjectProvider";
 import ProjectTitleContainer from "@/app/(components)/containers/projects/shows/ProjectTitleContainer";
+import ProjectPopularContainer from "@/app/(components)/containers/projects/shows/ProjectPopularContainer";
 import ProjectOverviewContainer from "@/app/(components)/containers/projects/shows/ProjectOverviewContainer";
 import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
 import DependencyInfoContainer from "@/app/(components)/containers/projects/shows/DependencyInfoContainer";
@@ -29,7 +30,18 @@ const ProjectShow: React.FC = () => {
                             <NoData message="Failed to get project data" />
                         ) : (
                             <>
-                                <ProjectTitleContainer project={project} />
+                                <div className="lg:relative flex flex-col lg:flex-row items-center lg:justify-center">
+                                    <ProjectTitleContainer project={project} />
+                                    <div className="lg:absolute lg:right-0 flex lg:flex-row gap-2">
+                                        <ProjectPopularContainer
+                                            url={
+                                                project.APIURL ?
+                                                project.APIURL :
+                                                undefined
+                                            }
+                                        />
+                                    </div>
+                                </div>
                                 <ProjectOverviewContainer project={project} />
                                 <PackageInfoContainer packageData={project.Package} />
                                 <div className="flex flex-wrap pb-2">

@@ -58,6 +58,16 @@ const ProjectShow: React.FC = () => {
                                                 project.APIURL :
                                                 undefined
                                             }
+                                            firstCommitDate={
+                                                project.FirstCommitDate !== null ?
+                                                project.FirstCommitDate :
+                                                ''
+                                            }
+                                            lastCommitDate={
+                                                project.LastCommitDate !== null ?
+                                                project.LastCommitDate :
+                                                ''
+                                            }
                                         />
                                     </div>
                                     <div className="w-full md:w-1/2 pl-4">

@@ -1,8 +1,9 @@
 import { format } from "date-fns";
 
 // REST APIによって取得したコミットデータからコミット日のみを抽出する関数
-export const extractCommitDate = (commits: any[], url: string) => {
+export const extractCommitDate = (commits: any[], url: string): [string[], string] => {
     let commitDate: string[] = [];
+    let lastCommitDate = '';
 
     // urlによって，dateの格納位置が違うので，それに対応
     if (url.includes('github.com')) {
@@ -11,7 +12,12 @@ export const extractCommitDate = (commits: any[], url: string) => {
         commitDate = commits.map((commit: any) => commit.committed_date);
     }
 
-    return commitDate;
+    if (commitDate[0] !== undefined) {
+        const date = new Date(commitDate[0]);
+        lastCommitDate = format(date, "yyyy-MM-dd");
+    }
+
+    return [commitDate, lastCommitDate];
 };
 
 // 各月ごとのコミット数を集計する関数

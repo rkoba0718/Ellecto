@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getProjectDetails, cacheCommitData } from "@/app/lib/db";
+import { getProjectDetails, cacheCommitData, updateLastCommitDate } from "@/app/lib/db";
 import { fetchGithubCommitData, fetchSalsaDebianCommitData } from "@/app/lib/restAPI";
 import { extractCommitDate, countMonthlyCommits } from "@/app/lib/commits";
 
@@ -21,13 +21,18 @@ export async function GET(req: NextRequest, { params }: { params: { projectName:
 
         if (allCommits === null) return (null)
 
-        const commitDate = extractCommitDate(allCommits, url);
+        const [commitDate, lastCommitDate] = extractCommitDate(allCommits, url);
+        if (lastCommitDate !== '' && project.LastCommitDate !== lastCommitDate) {
+            // 最終コミット日を更新
+            await updateLastCommitDate(project._id, lastCommitDate);
+        }
+        const newLastCommitDate = lastCommitDate !== '' ? lastCommitDate : project.LastCommitDate;
         const monthlyCommits = countMonthlyCommits(commitDate);
         const newCacheData = { ...cacheData, ...monthlyCommits };
         Object.keys(newCacheData).map((key) => totalCommits += newCacheData[key]);
         await cacheCommitData(project._id, newCacheData, new Date());
 
-        return NextResponse.json({ newCacheData, totalCommits }, { status: 200 });
+        return NextResponse.json({ newCacheData, totalCommits, newLastCommitDate }, { status: 200 });
     } catch (error) {
         console.error("Error fetching or caching commit data:", error);
         const errorMessage = error instanceof Error ? error.message : "Error fetching commit data";

@@ -144,3 +144,14 @@ export async function cacheCommitData(projectId: ObjectId, monthlyCommits: { [mo
         { $set: { Commit: commitData } }
     );
 };
+
+// 与えられたプロジェクトIDのプロジェクトのLastCommitDate（最新コミット日）を更新する関数
+export async function updateLastCommitDate(projectId: ObjectId, lastCommitDate: string) {
+    const db = await connectToDatabase();
+    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+
+    await collection.updateOne(
+        { _id: projectId },
+        { $set: { LastCommitDate: lastCommitDate } }
+    );
+};

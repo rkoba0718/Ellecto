@@ -60,6 +60,23 @@ export async function fetchGithubContributorData(repoUrl: string) {
 
 };
 
+export async function fetchGithubRepoData(repoUrl: string) {
+    const repoName = repoUrl.split("github.com/")[1];
+    const octokit = new Octokit({ auth: GITHUB_TOKEN });
+
+    try {
+        const repoData = await octokit.request(`GET /repos/${repoName}`);
+        const { stargazers_count, forks_count } = repoData.data;
+        return {
+            stars: stargazers_count,
+            forks: forks_count
+        };
+    } catch (error) {
+        console.error('Error fetching repository data:', error);
+        throw new Error('Error fetching github repository data');
+    }
+};
+
 export async function fetchSalsaDebianCommitData(repoUrl: string, lastFetchDate?: Date) {
     const repoName = repoUrl.split("salsa.debian.org/")[1];
     const perPage = 100;
@@ -129,5 +146,25 @@ export async function fetchSalsaDebianContributorData(repoUrl: string) {
     } catch (error) {
         console.error(`Error fetching user data:`, error);
         throw new Error('Error fetching salsa debian contributor data');
+    }
+};
+
+export async function fetchSalsaDebianRepoData(repoUrl: string) {
+    const repoName = repoUrl.split("salsa.debian.org/")[1];
+
+    try {
+        const repoData = await axios.get(
+            `https://salsa.debian.org/api/v4/projects/${encodeURIComponent(repoName)}`
+        );
+
+        const { star_count, forks_count } = repoData.data;
+
+        return {
+            stars: star_count,
+            forks: forks_count
+        };
+    } catch (error) {
+        console.error(`Error fetching repository data:`, error);
+        throw new Error('Error fetching salsa debian repository data');
     }
 };

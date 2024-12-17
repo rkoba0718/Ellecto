@@ -54,8 +54,8 @@ const ProjectShow: React.FC = () => {
                                         <CommitStatsContainer
                                             projectName={project.Name}
                                             url={
-                                                project.URL && project.URL['Vcs-Browser'] ?
-                                                project.URL['Vcs-Browser'] :
+                                                project.APIURL ?
+                                                project.APIURL :
                                                 undefined
                                             }
                                         />
@@ -63,8 +63,8 @@ const ProjectShow: React.FC = () => {
                                     <div className="w-full md:w-1/2 pl-4">
                                         <ContributionContainer
                                             url={
-                                                project.URL && project.URL['Vcs-Browser'] ?
-                                                project.URL['Vcs-Browser'] :
+                                                project.APIURL ?
+                                                project.APIURL :
                                                 undefined
                                             }
                                         />

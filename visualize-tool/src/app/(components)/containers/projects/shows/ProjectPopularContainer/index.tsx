@@ -1,6 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 
-import { Error as ErrorType } from "@/app/types/Error";
 import { fetchGithubRepoData, fetchSalsaDebianRepoData } from "@/app/lib/restAPI";
 import ProjectPopular from "@/app/(components)/presentationals/projects/shows/ProjectPopular";
 

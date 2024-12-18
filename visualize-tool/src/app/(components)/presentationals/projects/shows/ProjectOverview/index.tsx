@@ -38,7 +38,14 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
                     {project.License === '' ? (
                         <NoData message="No License" />
                     ) : (
-                        <p>{project.License}</p>
+                        <a
+                            href={`https://opensource.org/license/${project.License}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline block mb-1"
+                        >
+                            {project.License}
+                        </a>
                     )}
                 </div>
 

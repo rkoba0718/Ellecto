@@ -55,21 +55,32 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
                         URL
                     </h2>
                     {project.URL ? (
-                        Object.keys(project.URL).map((key) => {
-                            const label = key.includes('Vcs-') ? key.replace('Vcs-', '').trim() : key;
-                            return (
-                                <a
+                        <>
+                            {Object.keys(project.URL).map((key) => {
+                                const label = key.includes('Vcs-') ? key.replace('Vcs-', '').trim() : key;
+                                // GitのcloneURLは表示しない
+                                if (label === 'Git') return null;
+                                return (
+                                    <a
                                     href={project.URL[key]}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-500 hover:underline block mb-1"
                                     key={label}
-                                >
-                                    <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2" />
-                                    {label}
-                                </a>
-                            );
-                        })
+                                    >
+                                        <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2" />
+                                        {label === 'Browser' ? 'Repository' : label}
+                                    </a>
+                                );
+                            })}
+                            {project.URL['Vcs-Git'] && (
+                                <div className="mt-6 mx-8">
+                                    <pre className="bg-gray-100 p-2 rounded text-sm overflow-x-auto text-gray-600">
+                                        git clone {project.URL['Vcs-Git']}
+                                    </pre>
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <NoData message="No URLs" />
                     )}

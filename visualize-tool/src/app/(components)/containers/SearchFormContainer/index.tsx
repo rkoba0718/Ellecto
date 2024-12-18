@@ -12,6 +12,10 @@ const SearchFormContainer: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [language, setLanguage] = useState('');
     const [license, setLicense] = useState('');
+    const [minYears, setMinYears] = useState<number | ''>('');
+    const [lastUpdateYears, setLastUpdateYears] = useState<number | ''>('');
+    const [lastUpdateMonths, setLastUpdateMonths] = useState<number | ''>('');
+    const [maxDependencies, setMaxDependencies] = useState<number | ''>('');
     const [result, setResult] = useRecoilState(searchResultState);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -20,6 +24,9 @@ const SearchFormContainer: React.FC = () => {
     const [searchTermWeight, setSearchTermWeight] = useState(1);
     const [languageWeight, setLanguageWeight] = useState(1);
     const [licenseWeight, setLicenseWeight] = useState(1);
+    const [minYearsWeight, setMinYearsWeight] = useState(1);
+    const [lastUpdateWeight, setLastUpdateWeight] = useState(1);
+    const [maxDependenciesWeight, setMaxDependenciesWeight] = useState(1);
 
     const handleSearchSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,10 +44,17 @@ const SearchFormContainer: React.FC = () => {
                     searchTerm,
                     language,
                     license,
+                    minYears,
+                    lastUpdateYears,
+                    lastUpdateMonths,
+                    maxDependencies,
                     weight: {
                         searchTerm: searchTermWeight,
                         language: languageWeight,
-                        license: licenseWeight
+                        license: licenseWeight,
+                        minYears: minYearsWeight,
+                        lastUpdateMonths: lastUpdateWeight,
+                        maxDependencies: maxDependenciesWeight
                     }
                 })
             });
@@ -58,21 +72,47 @@ const SearchFormContainer: React.FC = () => {
 
     return (
         <SearchForm
+            loading={loading}
+            error={error}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             handleSearchSubmit={handleSearchSubmit}
-            loading={loading}
-            error={error}
-            language={language}
-            setLanguage={setLanguage}
-            license={license}
-            setLicense={setLicense}
-            searchTermWeight={searchTermWeight}
-            setSearchTermWeight={setSearchTermWeight}
-            languageWeight={languageWeight}
-            setLanguageWeight={setLanguageWeight}
-            licenseWeight={licenseWeight}
-            setLicenseWeight={setLicenseWeight}
+            options={{
+                language: language,
+                license: license,
+                minYears: minYears,
+                lastUpdate: {
+                    years: lastUpdateYears,
+                    months: lastUpdateMonths
+                },
+                maxDependencies: maxDependencies
+            }}
+            optionsSets={{
+                setLanguage: setLanguage,
+                setLicense: setLicense,
+                setMinYears: setMinYears,
+                lastUpdateSets: {
+                    setYears: setLastUpdateYears,
+                    setMonth: setLastUpdateMonths
+                },
+                setMaxDependencies: setMaxDependencies
+            }}
+            weights={{
+                searchTermWeight: searchTermWeight,
+                languageWeight: languageWeight,
+                licenseWeight: licenseWeight,
+                minYearsWeight: minYearsWeight,
+                lastUpdateWeight: lastUpdateWeight,
+                maxDependenciesWeight: maxDependenciesWeight
+            }}
+            weightSets={{
+                setSearchTermWeight: setSearchTermWeight,
+                setLanguageWeight: setLanguageWeight,
+                setLicenseWeight: setLicenseWeight,
+                setMinYearsWeight: setMinYearsWeight,
+                setLastUpdateWeight: setLastUpdateWeight,
+                setMaxDependenciesWeight: setMaxDependenciesWeight
+            }}
         />
     )
 };

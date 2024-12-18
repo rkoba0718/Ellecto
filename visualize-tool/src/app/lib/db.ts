@@ -17,7 +17,16 @@ const escapeRegExp = (string: string) => {
 }
 
 // 与えられたキーワードやライセンスなどの情報からDBを検索し，スコア順に返す関数
-export async function searchProjects(searchTerm: string, language: string, license: string, weight: any) {
+export async function searchProjects(
+    searchTerm: string,
+    language: string,
+    license: string,
+    minYears: number | '',
+    lastUpdateYears: number | '',
+    lastUpdateMonths: number | '',
+    maxDependencies: number | '',
+    weight: any
+) {
     const db = await connectToDatabase();
     const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
 
@@ -25,6 +34,16 @@ export async function searchProjects(searchTerm: string, language: string, licen
     const keywordRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
     const languageRegex = new RegExp(language.split(' ').join('|'), 'i');
     const licenseRegex = new RegExp(license.split(' ').join('|'), 'i');
+
+    // 今日の日付を取得
+    const currentDate = new Date();
+    const lastUpdateThreshold = new Date();
+    if (lastUpdateYears !== '') {
+        lastUpdateThreshold.setFullYear(currentDate.getFullYear() - lastUpdateYears);
+    }
+    if (lastUpdateMonths !== '') {
+        lastUpdateThreshold.setMonth(currentDate.getMonth() - lastUpdateMonths);
+    }
 
     const query = {
         $and: [
@@ -38,7 +57,10 @@ export async function searchProjects(searchTerm: string, language: string, licen
                 { 'Language.Lang1.Name': { $regex: languageRegex } },
                 { 'Description.summary': { $regex: languageRegex } },
             ]},
-            { License: { $regex: licenseRegex } }
+            { License: { $regex: licenseRegex } },
+            minYears !== '' ? { FirstCommitDate: { $lte: `${currentDate.getFullYear() - minYears}-12-31` } } : {},
+            lastUpdateYears !== '' || lastUpdateMonths !== '' ? { LastCommitDate: { $gte: lastUpdateThreshold.toISOString().split('T')[0] } } : {},
+            maxDependencies !== '' ? { 'NumberOfBuild-Depends': { $lte: maxDependencies } } : {}
         ],
         // 機能を提供しないパッケージを除外
         $nor: [
@@ -90,6 +112,21 @@ export async function searchProjects(searchTerm: string, language: string, licen
                 const escapeLic = escapeRegExp(lic);
                 if (new RegExp(escapeLic, 'i').test(project.License)) score += weight.license * 1;
             })
+        }
+
+        // 開発履歴のスコア加算
+        if (minYears !== '') {
+            if (project.FirstCommitDate && project.FirstCommitDate <= `${currentDate.getFullYear() - minYears}-12-31`) score += weight.minYears * 1;
+        }
+
+        // 最終更新のスコア加算
+        if (lastUpdateMonths !== '') {
+            if (project.LastCommitDate && project.LastCommitDate >= lastUpdateThreshold.toISOString().split('T')[0]) score += weight.lastUpdateMonths * 1;
+        }
+
+        // 依存関係のスコア加算
+        if (maxDependencies !== '') {
+            if (project['NumberOfBuild-Depends'] !== 0 && project['NumberOfBuild-Depends'] <= maxDependencies) score += weight.maxDependencies * 1;
         }
 
         return { ...project, score };

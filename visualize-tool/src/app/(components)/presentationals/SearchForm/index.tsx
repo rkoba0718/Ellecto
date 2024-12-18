@@ -32,21 +32,47 @@ const WeightButton: React.FC<WeightButtonProps> = ({ label, weight, setWeight })
   };
 
 type SearchFormProps = {
+    loading: boolean;
+    error: boolean;
     searchTerm: string;
     setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
     handleSearchSubmit: (e: React.FormEvent) => void;
-    loading: boolean;
-    error: boolean;
-    language: string;
-    setLanguage: React.Dispatch<React.SetStateAction<string>>;
-    license: string;
-    setLicense: React.Dispatch<React.SetStateAction<string>>;
-    searchTermWeight: number;
-    setSearchTermWeight: React.Dispatch<React.SetStateAction<number>>;
-    languageWeight: number;
-    setLanguageWeight: React.Dispatch<React.SetStateAction<number>>;
-    licenseWeight: number;
-    setLicenseWeight: React.Dispatch<React.SetStateAction<number>>;
+    options: {
+        language: string;
+        license: string;
+        minYears: number | '';
+        lastUpdate: {
+            years: number | '';
+            months: number | '';
+        };
+        maxDependencies: number | '';
+    }
+    optionsSets: {
+        setLanguage: React.Dispatch<React.SetStateAction<string>>;
+        setLicense: React.Dispatch<React.SetStateAction<string>>;
+        setMinYears: React.Dispatch<React.SetStateAction<number | ''>>;
+        lastUpdateSets: {
+            setYears: React.Dispatch<React.SetStateAction<number | ''>>;
+            setMonth: React.Dispatch<React.SetStateAction<number | ''>>;
+        };
+        setMaxDependencies: React.Dispatch<React.SetStateAction<number | ''>>;
+    }
+    weights: {
+        searchTermWeight: number;
+        languageWeight: number;
+        licenseWeight: number;
+        minYearsWeight: number;
+        lastUpdateWeight: number;
+        maxDependenciesWeight: number;
+    };
+    weightSets: {
+        setSearchTermWeight: React.Dispatch<React.SetStateAction<number>>;
+        setLanguageWeight: React.Dispatch<React.SetStateAction<number>>;
+        setLicenseWeight: React.Dispatch<React.SetStateAction<number>>;
+        setMinYearsWeight: React.Dispatch<React.SetStateAction<number>>;
+        setLastUpdateWeight: React.Dispatch<React.SetStateAction<number>>;
+        setMaxDependenciesWeight: React.Dispatch<React.SetStateAction<number>>;
+    };
 };
 
 const SearchForm: React.FC<SearchFormProps> = ({
@@ -55,16 +81,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
     handleSearchSubmit,
     loading,
     error,
-    language,
-    setLanguage,
-    license,
-    setLicense,
-    searchTermWeight,
-    setSearchTermWeight,
-    languageWeight,
-    setLanguageWeight,
-    licenseWeight,
-    setLicenseWeight
+    options,
+    optionsSets,
+    weights,
+    weightSets,
 }) => {
     return(
         <>
@@ -106,8 +126,8 @@ const SearchForm: React.FC<SearchFormProps> = ({
                             <label className="block text-gray-700 mb-1">Language</label>
                             <input
                                 type="text"
-                                value={language}
-                                onChange={(e) => setLanguage(e.target.value)}
+                                value={options.language}
+                                onChange={(e) => optionsSets.setLanguage(e.target.value)}
                                 placeholder="Type Language written in or available for"
                                 className="w-full bg-white border border-gray-300 rounded px-3 py-2"
                             />
@@ -117,16 +137,96 @@ const SearchForm: React.FC<SearchFormProps> = ({
                             <label className="block text-gray-700 mb-1">License</label>
                             <input
                                 type="text"
-                                value={license}
-                                onChange={(e) => setLicense(e.target.value)}
+                                value={options.license}
+                                onChange={(e) => optionsSets.setLicense(e.target.value)}
                                 placeholder="Type License"
                                 className="w-full bg-white border border-gray-300 rounded px-3 py-2"
                             />
                         </div>
 
-                        <WeightButton label="Keyword Weight" weight={searchTermWeight} setWeight={setSearchTermWeight} />
-                        <WeightButton label="Language Weight" weight={languageWeight} setWeight={setLanguageWeight} />
-                        <WeightButton label="License Weight" weight={licenseWeight} setWeight={setLicenseWeight} />
+                        <div className="mb-4">
+                            <label className="block text-gray-700 mb-1">Development History</label>
+                            <div className="flex items-center mb-2">
+                                <input
+                                    type="number"
+                                    value={options.minYears}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === '') { // 数値が消された場合に初期状態に戻す
+                                            optionsSets.setMinYears('');
+                                        } else if (/^\d*$/.test(value)) { // 正の整数のみ許可
+                                            optionsSets.setMinYears(Number(value));
+                                        }
+                                    }}
+                                    placeholder="Years"
+                                    className="border border-gray-300 rounded px-3 py-2 mr-2"
+                                />
+                            </div>
+                            <p className="text-gray-500 text-sm ml-1">Enter the minimum years (positive integer) since the project started</p>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 mb-1">Last Update</label>
+                            <div className="flex items-center mb-2">
+                                <input
+                                    type="number"
+                                    placeholder="Years"
+                                    value={options.lastUpdate.years}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === '') { // 数値が消された場合に初期状態に戻す
+                                            optionsSets.lastUpdateSets.setYears('');
+                                        } else if (/^\d*$/.test(value)) { // 正の整数のみ許可
+                                            optionsSets.lastUpdateSets.setYears(Number(value));
+                                        }
+                                    }}
+                                    className="border border-gray-300 rounded px-3 py-2 mr-2"
+                                />
+                                <input
+                                    type="number"
+                                    placeholder="Months"
+                                    value={options.lastUpdate.months}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === '') { // 数値が消された場合に初期状態に戻す
+                                            optionsSets.lastUpdateSets.setMonth('');
+                                        } else if (/^\d*$/.test(value)) { // 正の整数のみ許可
+                                            optionsSets.lastUpdateSets.setMonth(Number(value));
+                                        }
+                                    }}
+                                    className="border border-gray-300 rounded px-3 py-2 mr-2"
+                                />
+                            </div>
+                            <p className="text-gray-500 text-sm ml-1">Enter the number of years and months (positive integer) since the project was last update</p>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 mb-1">Dependencies Count</label>
+                            <div className="flex items-center mb-2">
+                                <input
+                                    type="number"
+                                    value={options.maxDependencies}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (value === '') { // 数値が消された場合に初期状態に戻す
+                                            optionsSets.setMaxDependencies('');
+                                        } else if (/^\d*$/.test(value)) { // 正の整数のみ許可
+                                            optionsSets.setMaxDependencies(Number(value));
+                                        }
+                                    }}
+                                    placeholder="Dependencies"
+                                    className="border border-gray-300 rounded px-3 py-2 mr-2"
+                                />
+                            </div>
+                            <p className="text-gray-500 text-sm ml-1">Enter the maximum number (positive integer) of allowed dependencies</p>
+                        </div>
+
+                        <WeightButton label="Keyword Weight" weight={weights.searchTermWeight} setWeight={weightSets.setSearchTermWeight} />
+                        <WeightButton label="Language Weight" weight={weights.languageWeight} setWeight={weightSets.setLanguageWeight} />
+                        <WeightButton label="License Weight" weight={weights.licenseWeight} setWeight={weightSets.setLicenseWeight} />
+                        <WeightButton label="Development History Weight" weight={weights.minYearsWeight} setWeight={weightSets.setMinYearsWeight} />
+                        <WeightButton label="Last Update Weight" weight={weights.lastUpdateWeight} setWeight={weightSets.setLastUpdateWeight} />
+                        <WeightButton label="Dependencies Count Weight" weight={weights.maxDependenciesWeight} setWeight={weightSets.setMaxDependenciesWeight} />
 
                         <p className="text-gray-500 text-sm mb-2">
                             These weights adjust the importance of each field in scoring the search results.

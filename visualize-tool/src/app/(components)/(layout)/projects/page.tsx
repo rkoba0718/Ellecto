@@ -10,7 +10,7 @@ import PaginationContainer from "../../common/containers/PaginationContainer";
 const Projects: React.FC = () => {
     return (
         <ProjectsProvider>
-            {(result, currentPage, setCurrentPage, totalProjects, applyFiltersAndSort) => (
+            {(result, currentPage, setCurrentPage, totalProjects, sort, filters, applyFiltersAndSort) => (
                 <div className="container mx-auto py-10 px-10">
                     <>
                         <ResultSummaryContainer
@@ -18,6 +18,8 @@ const Projects: React.FC = () => {
                             currentPage={currentPage}
                             setCurrentPage={setCurrentPage}
                             totalProjects={totalProjects}
+                            sort={sort}
+                            filters={filters}
                             applyFiltersAndSort={applyFiltersAndSort}
                         />
                         <PaginationContainer

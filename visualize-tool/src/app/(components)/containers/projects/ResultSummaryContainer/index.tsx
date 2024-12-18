@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRecoilState } from 'recoil';
 
 import { ProjectInfo } from "@/app/types/ProjectInfo";
+import { Filters } from "@/app/types/Filters";
+import { sortOrderState } from "@/app/lib/atoms";
 import { projectsPerPage } from "@/app/(components)/containers/providers/ProjectsProvider/config";
 import ResultSummary from "@/app/(components)/presentationals/projects/ResultSummary";
 import PaginationContainer from "../../../common/containers/PaginationContainer";
@@ -13,7 +16,9 @@ type ResultSummaryContainerProps = {
     currentPage: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     totalProjects: number;
-    applyFiltersAndSort: (filters: { license: string; language: string }, sort: string) => void;
+    sort: string;
+    filters: Filters;
+    applyFiltersAndSort: (filters: Filters, sort: string, sortOrder: string) => void;
 };
 
 const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
@@ -21,20 +26,24 @@ const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
     currentPage,
     setCurrentPage,
     totalProjects,
+    sort,
+    filters,
     applyFiltersAndSort
 }) => {
     const totalPages = Math.ceil(totalProjects / projectsPerPage);
-    const [sort, setSort] = useState('relevance');
-    const [filters, setFilters] = useState({ license: '', language: '' });
+    const [sortOrder, setSortOrder] = useRecoilState(sortOrderState);
 
     const handleSortChange = (sortValue: string) => {
-        setSort(sortValue);
-        applyFiltersAndSort(filters, sortValue);
+        applyFiltersAndSort(filters, sortValue, sortOrder);
+    };
+
+    const onToggleSortOrder = (sortOrder: 'up' | 'down') => {
+        setSortOrder(sortOrder);
+        applyFiltersAndSort(filters, sort, sortOrder);
     };
 
     const handleFilterChange = (newFilters: { license: string; language: string }) => {
-        setFilters(newFilters);
-        applyFiltersAndSort(newFilters, sort);
+        applyFiltersAndSort(newFilters, sort, sortOrder);
     };
 
     return (
@@ -45,6 +54,8 @@ const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
                 totalPages={totalPages}
                 sort={sort}
                 onSortChange={handleSortChange}
+                sortOrder={sortOrder}
+                onToggleSortOrder={onToggleSortOrder}
                 filters={filters}
                 onFilterChange={handleFilterChange}
             />

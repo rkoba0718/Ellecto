@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { useRouter } from 'next/navigation';
 
 import { ProjectInfo } from '@/app/types/ProjectInfo';
-import { searchResultState } from '@/app/lib/atoms';
+import { Filters } from '@/app/types/Filters';
+import { searchResultState, sortCommandState, filtersState } from '@/app/lib/atoms';
 import { projectsPerPage } from './config';
 
 type ProjectsProviderProps = {
@@ -14,20 +15,28 @@ type ProjectsProviderProps = {
     currentPage: number,
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
     totalProjects: number,
-    applyFiltersAndSort: (filters: { license: string; language: string }, sort: string) => void
+    sort: string,
+    filters: Filters,
+    applyFiltersAndSort: (filters: Filters, sort: string, sortOrder: string) => void
   ) => React.ReactNode;
 };
 
 const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
   const result = useRecoilValue(searchResultState);
+  const [sort, setSort] = useRecoilState(sortCommandState);
+  const [filters, setFilters] = useRecoilState(filtersState);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredResult, setFilteredResult] = useState<ProjectInfo[]>(result);
-  const [sort, setSort] = useState('relevance');
-  const [filters, setFilters] = useState({ license: '', language: '' });
   const navigation = useRouter();
 
   // フィルタとソートの適用
-  const applyFiltersAndSort: (filters: { license: string; language: string }, sort: string) => void = (filters: { license: string; language: string }, sort: string) => {
+  const applyFiltersAndSort: (filters: { license: string; language: string }, sort: string, sortOrder: string) => void = (
+    filters: { license: string; language: string },
+    sort: string,
+    sortOrder: string
+  ) => {
+    setFilters(filters);
+    setSort(sort);
     const filtered = result
       .filter(project =>
         (filters.license ? project.License.toLowerCase().includes(filters.license.toLowerCase()) : true) &&
@@ -41,8 +50,24 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
         )
       )
       .sort((a, b) => {
-          if (sort === 'name') return a.Name.localeCompare(b.Name);
-          return b.score - a.score; // Relevance（デフォルト）
+        const order = sortOrder === 'up' ? 1 : -1;
+        if (sort === 'name') {
+          return order * a.Name.localeCompare(b.Name);
+        } else if (sort === 'history') {
+          // FirstCommitDateが古い順、nullは後ろ
+          const dateA = a.FirstCommitDate ? new Date(a.FirstCommitDate) : new Date(9999, 12, 31);
+          const dateB = b.FirstCommitDate ? new Date(b.FirstCommitDate) : new Date(9999, 12, 31);
+          return order * (dateA.getTime() - dateB.getTime());
+        } else if (sort === 'update') {
+          // LastCommitDateが最近順、nullは後ろ
+          const dateA = a.LastCommitDate ? new Date(a.LastCommitDate) : new Date(0);
+          const dateB = b.LastCommitDate ? new Date(b.LastCommitDate) : new Date(0);
+          return order * (dateB.getTime() - dateA.getTime());
+        } else if (sort === 'dependencies') {
+          return order * (a['NumberOfBuild-Depends'] - b['NumberOfBuild-Depends']);
+        } else {
+          return order * (b.score - a.score); // Relevance（デフォルト）
+        }
       });
 
     setFilteredResult(filtered);
@@ -51,7 +76,7 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
 
   // 初期表示でフィルタリングとソートを適用
   useEffect(() => {
-    applyFiltersAndSort(filters, sort);
+    applyFiltersAndSort(filters, sort, 'up');
   }, [filters, sort, result]);
 
 
@@ -63,7 +88,7 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
     navigation.push(`/projects?skip=${skip}`);
   }, [currentPage, navigation]);
 
-  return <>{children(currentResult, currentPage, setCurrentPage, filteredResult.length, applyFiltersAndSort)}</>
+  return <>{children(currentResult, currentPage, setCurrentPage, filteredResult.length, sort, filters, applyFiltersAndSort)}</>
 };
 
 export default ProjectsProvider;

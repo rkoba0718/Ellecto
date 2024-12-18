@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
-import { useRecoilState } from "recoil";
-import { searchResultState } from "@/app/lib/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { searchResultState, sortCommandState, filtersState, sortOrderState } from "@/app/lib/atoms";
 
 import SearchForm from "../../presentationals/SearchForm";
 
@@ -17,6 +17,9 @@ const SearchFormContainer: React.FC = () => {
     const [lastUpdateMonths, setLastUpdateMonths] = useState<number | ''>('');
     const [maxDependencies, setMaxDependencies] = useState<number | ''>('');
     const [result, setResult] = useRecoilState(searchResultState);
+    const setSort = useSetRecoilState(sortCommandState);
+    const setSortOrder = useSetRecoilState(sortOrderState);
+    const setFilters = useSetRecoilState(filtersState);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
@@ -69,6 +72,13 @@ const SearchFormContainer: React.FC = () => {
             router.push('/searchfailed');
         }
     };
+
+    // sort，sortOrder，filterを初期化
+    useEffect(() => {
+        setSort('relevance');
+        setSortOrder('up');
+        setFilters({ license: '', language: '' });
+    },[]);
 
     return (
         <SearchForm

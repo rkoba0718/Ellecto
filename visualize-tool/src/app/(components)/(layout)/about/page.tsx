@@ -11,9 +11,9 @@ const About: React.FC = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Project Overview</h2>
                 <p className="text-gray-700 mb-4">
-                    ProjSelector is a tool designed to support software developers in the selection of open-source software (OSS).
+                    ProjSelector is a tool designed to support both software developers and users in the selection of open-source software (OSS).
                     It offers a robust search system based on OSS functionalities, enabling users to access detailed information
-                    about development languages, licenses, dependencies, and similar projects, among others.
+                    about development languages, licenses, dependencies, development history, and similar projects, among others.
                 </p>
             </section>
 
@@ -21,7 +21,8 @@ const About: React.FC = () => {
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Use Cases and Target Audience</h2>
                 <p className="text-gray-700 mb-4">
                     ProjSelector is especially useful for software developers who need to carefully evaluate various OSS options.
-                    This tool is aimed at developers and other individuals interested in selecting the most suitable OSS for their projects.
+                    Additionally, software users who want to identify suitable software for their needs can benefit from ProjSelector's detailed search and filtering features. 
+                    Whether you are a developer building new software or a user looking for reliable OSS solutions, ProjSelector helps streamline the selection process.
                 </p>
             </section>
 
@@ -30,9 +31,18 @@ const About: React.FC = () => {
                 <div className="bg-white p-5 rounded-lg shadow">
                     <h3 className="text-xl font-semibold mb-2">Search Functionality</h3>
                     <ul className="list-disc pl-5 mb-4 text-gray-700">
-                        <li>Users can search by keywords, language, or license. With custom scoring, they can prioritize which aspect matters most in their search results.</li>
-                        <li>Sort search results by relevance or name</li>
-                        <li>Filter search results by license or language</li>
+                        <li>Users can search by keywords, language, license, development history, last update period, or number of dependencies.</li>
+                        <li>Custom scoring allows users to prioritize search results based on what matters most, such as keywords, language, or license.</li>
+                    </ul>
+                    <h3 className="text-xl font-semibold mb-2">Filtering and Sorting</h3>
+                    <ul className="list-disc pl-5 mb-4 text-gray-700">
+                        <li>Filter search results by license or language.</li>
+                        <li>Sort results by relevance, name, development history (longest first), last update (most recent first), or dependencies count (fewest first).</li>
+                    </ul>
+                    <h3 className="text-xl font-semibold mb-2">Additional Insights</h3>
+                    <ul className="list-disc pl-5 text-gray-700">
+                        <li>View development timelines and update frequencies to evaluate software longevity and maintenance activity.</li>
+                        <li>Compare projects based on dependencies to identify lightweight and maintainable software.</li>
                     </ul>
                 </div>
             </section>

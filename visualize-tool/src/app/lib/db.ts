@@ -60,7 +60,7 @@ export async function searchProjects(
             { License: { $regex: licenseRegex } },
             minYears !== '' ? { FirstCommitDate: { $lte: `${currentDate.getFullYear() - minYears}-12-31` } } : {},
             lastUpdateYears !== '' || lastUpdateMonths !== '' ? { LastCommitDate: { $gte: lastUpdateThreshold.toISOString().split('T')[0] } } : {},
-            maxDependencies !== '' ? { 'NumberOfBuild-Depends': { $lte: maxDependencies } } : {}
+            maxDependencies !== '' ? { NumberOfDepends: { $lte: maxDependencies } } : {}
         ],
         // 機能を提供しないパッケージを除外
         $nor: [
@@ -126,7 +126,7 @@ export async function searchProjects(
 
         // 依存関係のスコア加算
         if (maxDependencies !== '') {
-            if (project['NumberOfBuild-Depends'] !== 0 && project['NumberOfBuild-Depends'] <= maxDependencies) score += weight.maxDependencies * 1;
+            if (project.NumberOfDepends !== 0 && project.NumberOfDepends <= maxDependencies) score += weight.maxDependencies * 1;
         }
 
         return { ...project, score };

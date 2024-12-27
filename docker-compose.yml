@@ -30,6 +30,11 @@ services:
     tty: true
     volumes:
       - ./shared-data:/shared
+  debian-data-extract:
+    build: data-extract/debian
+    tty: true
+    volumes:
+      - ./shared-data:/shared
   crosssim:
     build: similarity-model/
     tty: true

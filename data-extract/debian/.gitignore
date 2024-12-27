@@ -1,0 +1,14 @@
+# 入力ファイル
+input.txt
+
+# 出力ファイル
+out/
+
+# testファイル
+*test*
+
+# module
+node_module*/
+
+# 設定ファイル
+config.js

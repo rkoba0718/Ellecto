@@ -20,7 +20,7 @@ const LanguageInfo: React.FC<LanguageInfoProps> = ({
         <div className="text-center">
             <h2 className="font-bold text-xl">Code</h2>
             <div className="flex items-center">
-                <div className="pl-12">
+                <div className="pl-10">
                     <PieChart width={200} height={200}>
                         <Pie
                             data={data}

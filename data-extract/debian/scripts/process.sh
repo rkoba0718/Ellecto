@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cp ../packages.txt ./;
 node createNotExistProjectList.js packages.txt;
 mkdir data;

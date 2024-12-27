@@ -17,10 +17,10 @@ const LanguageInfo: React.FC<LanguageInfoProps> = ({
     loc
 }) => {
     return (
-        <>
-            <h2 className="font-bold text-xl mb-2">Code</h2>
+        <div className="text-center">
+            <h2 className="font-bold text-xl">Code</h2>
             <div className="flex items-center">
-                <div>
+                <div className="pl-12">
                     <PieChart width={200} height={200}>
                         <Pie
                             data={data}
@@ -55,7 +55,7 @@ const LanguageInfo: React.FC<LanguageInfoProps> = ({
                     <h3 className="mt-3"><strong>LOC:</strong> {loc}</h3>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

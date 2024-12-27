@@ -55,7 +55,7 @@ const ProjectShow: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-wrap pb-2">
-                                    <div className="w-full md:w-1/2 pr-8">
+                                    <div className="w-full md:w-1/2 md:pr-8">
                                         <DependencyContainer
                                             kind="Run-time"
                                             selectedProjectName={project.Name}
@@ -66,7 +66,7 @@ const ProjectShow: React.FC = () => {
                                             }
                                         />
                                     </div>
-                                    <div className="w-full md:w-1/2 pl-8">
+                                    <div className="w-full md:w-1/2 md:pl-8">
                                         <DependencyContainer
                                             kind="Build"
                                             selectedProjectName={project.Name}
@@ -80,7 +80,7 @@ const ProjectShow: React.FC = () => {
                                 </div>
                                 <PackageInfoContainer packageData={project.Package} />
                                 <div className="flex flex-wrap pb-2">
-                                    <div className="w-full md:w-1/2 pr-4">
+                                    <div className="w-full md:w-1/2 md:pr-4">
                                         <CommitStatsContainer
                                             projectName={project.Name}
                                             url={
@@ -100,7 +100,7 @@ const ProjectShow: React.FC = () => {
                                             }
                                         />
                                     </div>
-                                    <div className="w-full md:w-1/2 pl-4">
+                                    <div className="w-full md:w-1/2 md:pl-4">
                                         <ContributionContainer
                                             url={
                                                 project.APIURL ?

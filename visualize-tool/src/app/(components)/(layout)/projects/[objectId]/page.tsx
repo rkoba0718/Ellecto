@@ -9,8 +9,9 @@ import SelectedProjectProvider from "@/app/(components)/containers/providers/Sel
 import ProjectTitleContainer from "@/app/(components)/containers/projects/shows/ProjectTitleContainer";
 import ProjectPopularContainer from "@/app/(components)/containers/projects/shows/ProjectPopularContainer";
 import ProjectOverviewContainer from "@/app/(components)/containers/projects/shows/ProjectOverviewContainer";
+import ProjectDescriptionContainer from "@/app/(components)/containers/projects/shows/ProjectDescriptionContainer";
 import LanguageInfoContainer from "@/app/(components)/containers/projects/shows/LanguageInfoContainer";
-import DependencyInfoContainer from "@/app/(components)/containers/projects/shows/DependencyInfoContainer";
+import DependencyContainer from "@/app/(components)/common/containers/dependency/DependencyContainer";
 import PackageInfoContainer from "@/app/(components)/containers/projects/shows/PackageInfoContainer";
 import SimilarProjectsContainer from "@/app/(components)/containers/projects/shows/SimilarProjectsContainer";
 import CommitStatsContainer from "@/app/(components)/containers/projects/shows/CommitStatsContainer";
@@ -19,7 +20,7 @@ import ContributionContainer from "@/app/(components)/containers/projects/shows/
 const ProjectShow: React.FC = () => {
     return (
         <SelectedProjectProvider >
-            {(loading, error, project, transitiveProjects) => (
+            {(loading, error, project) => (
                 <div className="container mx-auto py-10 px-10">
                     {loading ? (
                         <Loading />
@@ -43,24 +44,41 @@ const ProjectShow: React.FC = () => {
                                     </div>
                                 </div>
                                 <ProjectOverviewContainer project={project} />
-                                <PackageInfoContainer packageData={project.Package} />
                                 <div className="flex flex-wrap pb-2">
                                     <div className="w-full md:w-2/5 px-4">
                                         <LanguageInfoContainer language={project.Language} loc={project.LOC} />
                                     </div>
                                     <div className="w-full md:w-3/5 px-4">
-                                        <DependencyInfoContainer
+                                        <ProjectDescriptionContainer
+                                            description={project.Description}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap pb-2">
+                                    <div className="w-full md:w-1/2 pr-8">
+                                        <DependencyContainer
+                                            kind="Run-time"
+                                            selectedProjectName={project.Name}
+                                            dependencies={
+                                                project.Depends ?
+                                                project.Depends :
+                                                undefined
+                                            }
+                                        />
+                                    </div>
+                                    <div className="w-full md:w-1/2 pl-8">
+                                        <DependencyContainer
+                                            kind="Build"
                                             selectedProjectName={project.Name}
                                             dependencies={
                                                 project['Build-Depends'] ?
                                                 project['Build-Depends'] :
                                                 undefined
                                             }
-                                            transitiveDependencies={transitiveProjects}
                                         />
                                     </div>
                                 </div>
-                                <SimilarProjectsContainer packageName={project.Name} />
+                                <PackageInfoContainer packageData={project.Package} />
                                 <div className="flex flex-wrap pb-2">
                                     <div className="w-full md:w-1/2 pr-4">
                                         <CommitStatsContainer
@@ -92,6 +110,7 @@ const ProjectShow: React.FC = () => {
                                         />
                                     </div>
                                 </div>
+                                <SimilarProjectsContainer packageName={project.Name} />
                             </>
                         )
                     )}

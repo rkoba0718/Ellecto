@@ -27,9 +27,8 @@ RUN cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sou
     apt-get update
 
 # ローカルファイルをコピー
-COPY input.txt /tmp/
-COPY *.sh /tmp/
-COPY *.js /tmp/
+COPY src/* /tmp/
+COPY scripts/* /tmp/
 COPY package.json /tmp/
 
 # package.jsonを反映

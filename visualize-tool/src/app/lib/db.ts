@@ -192,3 +192,15 @@ export async function updateLastCommitDate(projectId: ObjectId, lastCommitDate: 
         { $set: { LastCommitDate: lastCommitDate } }
     );
 };
+
+export async function getTransitiveDependencies(projectName: string): Promise<any> {
+    const db = await connectToDatabase();
+    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+
+    // プロジェクト名でデータベースから詳細情報を取得
+    const project = await collection.findOne({ Name: projectName });
+    if (!project) return [];
+    const dependenciesProject = project ? project : [];
+
+    return dependenciesProject;
+};

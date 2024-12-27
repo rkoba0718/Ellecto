@@ -16,18 +16,7 @@ export async function GET(req: Request, { params }: { params: { objectId: string
             return NextResponse.json({ message: `No Project with objectId ${objectId}` }, { status: 404 });
         }
 
-        const dependencies = project['Build-Depends'] ? project['Build-Depends'] : undefined;
-        const transitiveDependencyProjects = []; // 推移的に依存するプロジェクトを保存するオブジェクト
-        if (dependencies !== undefined) {
-            for (const dep of dependencies) {
-                const transDep = await collection.findOne({ Name: dep.Name });
-                if (transDep) {
-                    transitiveDependencyProjects.push(transDep);
-                }
-            }
-        }
-
-        return NextResponse.json({ project, transitiveDependencyProjects }, { status: 200 });
+        return NextResponse.json({ project }, { status: 200 });
     } catch (error) {
         console.error('Error fetching project:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

@@ -11,14 +11,12 @@ type SelectedProjectProviderProps = {
     loading: boolean,
     error: Error | null,
     project: ProjectInfo | null,
-    transitiveProjects: ProjectInfo[],
   ) => React.ReactNode;
 };
 
 const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ children }) => {
   const { objectId } = useParams();
   const [project, setProject] = useState<ProjectInfo | null>(null);
-  const [transitiveProjects, setTransitiveProjects] = useState<ProjectInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -39,7 +37,6 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
           return;
         }
         setProject(data.project);
-        setTransitiveProjects(data.transitiveDependencyProjects);
       } catch (err) {
         console.error("Error fetching project data:", err);
         setError({ status: 500, message: "An unexpected error occurred." });
@@ -50,7 +47,7 @@ const SelectedProjectProvider: React.FC<SelectedProjectProviderProps> = ({ child
     fetchProject();
   }, [objectId]);
 
-  return <>{children(loading, error, project, transitiveProjects)}</>;
+  return <>{children(loading, error, project)}</>;
 };
 
 export default SelectedProjectProvider;

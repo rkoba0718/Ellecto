@@ -2,25 +2,33 @@
 
 import React, { useState } from "react";
 
+import { Error as ErrorType } from "@/app/types/Error";
 import { Dependency } from "@/app/types/Dependency";
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 import { Graph } from "@/app/types/Graph";
 import NoData from "@/app/(components)/common/presentationals/NoData";
-import DependencyInfo from "@/app/(components)/presentationals/projects/shows/dependency/DependencyInfo";
+import DependencyInfo from "@/app/(components)/common/presentationals/dependency/DependencyInfo";
 
 const dependenciesPerPage = 5; // 1ページに表示する依存関係の数
 
 type DependencyInfoContainerProps = {
+    loading: boolean;
+    error: ErrorType | null;
+    kind: "Run-time" | "Build";
     selectedProjectName: string;
     dependencies: Dependency[] | undefined;
     transitiveDependencies: ProjectInfo[];
 };
 
 const DependencyInfoContainer: React.FC<DependencyInfoContainerProps> = ({
+    loading,
+    error,
+    kind,
     selectedProjectName,
     dependencies,
     transitiveDependencies
 }) => {
+    const key = kind === 'Run-time' ? 'Depends' : 'Build-Depends';
     const [viewMode, setViewMode] = useState<'graph' | 'list'>('graph');
     const [listCurrentPage, setListCurrentPage] = useState(1);
     const [filter, setFilter] = useState("");
@@ -34,6 +42,7 @@ const DependencyInfoContainer: React.FC<DependencyInfoContainerProps> = ({
     );
 
     const nodeSet = new Set<string>(); // 重複ノードを排除するためのセット
+    const directDependenciesNodeSet = new Set<string>(); // 直接的依存関係のノードのみをセットする変数
     const nodes = filteredDependencies !== undefined && transitiveDependencies.length > 0
         // 直接的依存関係も推移的依存関係（ネスト＝１）も存在する場合，重複を除いたどちらの要素もnodesに追加
         ? [
@@ -46,21 +55,22 @@ const DependencyInfoContainer: React.FC<DependencyInfoContainerProps> = ({
             ...filteredDependencies
                 .map((dep) => {
                     nodeSet.add(dep.Name);
+                    directDependenciesNodeSet.add(dep.Name);
                     return ({ id: dep.Name, color: "#B0B0B0" });
                 }),
             // 推移的な依存関係ノード
             ...transitiveDependencies.flatMap((tdep) =>
-                tdep['Build-Depends']
-                    ? tdep['Build-Depends']
-                        .filter((buildDep: any) => {
+                tdep[key]
+                    ? tdep[key]
+                        .filter((dep: any) => {
                             // フィルターされた直接的依存関係に含まれているかつ重複を避けるため、初めて見るノードのみ追加
-                            if (nodeSet.has(tdep.Name) && !nodeSet.has(buildDep.Name)) {
-                                nodeSet.add(buildDep.Name);
-                                return buildDep.Name;
+                            if (nodeSet.has(tdep.Name) && !nodeSet.has(dep.Name)) {
+                                nodeSet.add(dep.Name);
+                                return dep.Name;
                             }
                         })
-                        .map((buildDep: any) => ({
-                            id: buildDep.Name,
+                        .map((dep: any) => ({
+                            id: dep.Name,
                             color: "#D3D3D3",
                         }))
                     : []
@@ -78,22 +88,22 @@ const DependencyInfoContainer: React.FC<DependencyInfoContainerProps> = ({
                 id: dep.Name,
                 color: "#B0B0B0", // 灰色
             })),
-        ] : [];
+        ]: [];
 
     const links = filteredDependencies !== undefined && transitiveDependencies.length > 0
         // 直接的依存関係も推移的依存関係（ネスト＝１）も存在する場合，依存関係のリンクを接続
         ? [
             ...filteredDependencies.map((dep) => ({ source: selectedProjectName, target: dep.Name })),
             ...transitiveDependencies.flatMap((tdep) =>
-                tdep['Build-Depends']
-                    ? tdep['Build-Depends'].filter(((buildDep: any) => {
-                        if (nodeSet.has(tdep.Name)) {
-                            return buildDep.Name;
+                tdep[key]
+                    ? tdep[key].filter(((dep: any) => {
+                        if (directDependenciesNodeSet.has(tdep.Name)) {
+                            return dep.Name;
                         }
                     }))
-                    .map((buildDep: any) => ({
+                    .map((dep: any) => ({
                         source: tdep.Name,
-                        target: buildDep.Name
+                        target: dep.Name
                     }))
                     : []
             )
@@ -124,6 +134,9 @@ const DependencyInfoContainer: React.FC<DependencyInfoContainerProps> = ({
             </>
         ) : (
             <DependencyInfo
+                loading={loading}
+                error={error}
+                kind={kind}
                 dependencies={currentDependencies}
                 viewMode={viewMode}
                 toggleViewMode={toggleViewMode}

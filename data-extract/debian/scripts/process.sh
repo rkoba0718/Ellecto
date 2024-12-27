@@ -20,6 +20,7 @@ do
         cd ..;
         rm -rf $line;
     else
-        echo "apt source error"
+        echo "apt source error";
     fi
 done < NotExistProjectList.txt
+rm -rf data;

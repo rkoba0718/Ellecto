@@ -93,6 +93,7 @@ const DependencyInfo: React.FC<DependencyInfoProps> = ({
                         ) : (
                             <>
                                 <DependencyList
+                                    kind={kind}
                                     dependencies={dependencies}
                                     transitiveDependencies={transitiveDependencies}
                                 />

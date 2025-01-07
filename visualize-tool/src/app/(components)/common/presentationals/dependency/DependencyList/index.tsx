@@ -8,14 +8,17 @@ import { Dependency } from "@/app/types/Dependency";
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 
 type DependencyItemProps = {
+    kind: "Run-time" | "Build";
     dep: Dependency;
     transitiveDep: ProjectInfo | undefined;
 };
 
 const DependencyItem: React.FC<DependencyItemProps> = ({
+    kind,
     dep,
     transitiveDep
 }) => {
+    const key = kind === 'Run-time' ? 'Depends' : 'Build-Depends';
     const [expanded, setExpanded] = React.useState(false);
 
     const toggleExpand = () => {
@@ -37,8 +40,8 @@ const DependencyItem: React.FC<DependencyItemProps> = ({
                         {
                             transitiveDep === undefined
                             ? '-'
-                            : transitiveDep['Build-Depends']
-                                ? transitiveDep['Build-Depends'].map((tdep: Dependency, index: number) => (
+                            : transitiveDep[key]
+                                ? transitiveDep[key].map((tdep: Dependency, index: number) => (
                                     <span key={index} className="block ml-4">
                                         {tdep.Name}{tdep.Operator ? ` ${tdep.Operator}` : ''}{tdep.Version ? ` ${tdep.Version}` : ''}{tdep.Architecture ? `, ${tdep.Architecture}` : ''}
                                     </span>
@@ -53,11 +56,13 @@ const DependencyItem: React.FC<DependencyItemProps> = ({
 };
 
 type DependencyListProps = {
+    kind: "Run-time" | "Build";
     dependencies: Dependency[];
     transitiveDependencies: ProjectInfo[];
 };
 
 const DependencyList: React.FC<DependencyListProps> = ({
+    kind,
     dependencies,
     transitiveDependencies,
 }) => {
@@ -67,6 +72,7 @@ const DependencyList: React.FC<DependencyListProps> = ({
                 dependencies.map((dep, index) => (
                     <DependencyItem
                         key={index}
+                        kind={kind}
                         dep={dep}
                         transitiveDep={
                             transitiveDependencies.filter((tdep) => tdep.Name === dep.Name).length !== 0

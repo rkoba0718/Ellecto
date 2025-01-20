@@ -6,12 +6,12 @@ import Image from "next/image";
 const About: React.FC = () => {
     return (
         <div className="container mx-auto px-10 py-10 bg-gray-50 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold mb-6 text-green-800">About ProjSelector</h1>
+            <h1 className="text-3xl font-bold mb-6 text-green-800">About Ellecto</h1>
 
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Project Overview</h2>
                 <p className="text-gray-700 mb-4">
-                    ProjSelector is a tool designed to support both software developers and users in the selection of open-source software (OSS).
+                    Ellecto is a tool designed to support both software developers and users in the selection of open-source software (OSS).
                     It offers a robust search system based on OSS functionalities, enabling users to access detailed information
                     about development languages, licenses, dependencies, development history, and similar projects, among others.
                 </p>
@@ -20,9 +20,9 @@ const About: React.FC = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Use Cases and Target Audience</h2>
                 <p className="text-gray-700 mb-4">
-                    ProjSelector is especially useful for software developers who need to carefully evaluate various OSS options.
-                    Additionally, software users who want to identify suitable software for their needs can benefit from ProjSelector's detailed search and filtering features. 
-                    Whether you are a developer building new software or a user looking for reliable OSS solutions, ProjSelector helps streamline the selection process.
+                    Ellecto is especially useful for software developers who need to carefully evaluate various OSS options.
+                    Additionally, software users who want to identify suitable software for their needs can benefit from Ellecto's detailed search and filtering features. 
+                    Whether you are a developer building new software or a user looking for reliable OSS solutions, Ellecto helps streamline the selection process.
                 </p>
             </section>
 
@@ -58,7 +58,7 @@ const About: React.FC = () => {
                     <Image src="/recoil-logo.svg" alt="Recoil" width={120} height={120} />
                 </div>
                 <div className="text-gray-700">
-                    Currently, ProjSelector uses OSS package data provided by the official Ubuntu repository.
+                    Currently, Ellecto uses OSS package data provided by the official Ubuntu repository.
                     <Image src="/ubuntu-logo.svg" alt="Ubuntu" width={120} height={120} className="mt-2" />
                 </div>
             </section>
@@ -66,7 +66,7 @@ const About: React.FC = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Future Plans</h2>
                 <p className="text-gray-700">
-                    ProjSelector aims to expand its data sources in the future to include other Linux distributions such as Debian and Fedora,
+                    Ellecto aims to expand its data sources in the future to include other Linux distributions such as Debian and Fedora,
                     providing users with even more OSS options.
                 </p>
             </section>

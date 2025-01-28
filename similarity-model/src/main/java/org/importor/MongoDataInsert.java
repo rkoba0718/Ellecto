@@ -16,9 +16,10 @@ import java.util.Map;
 public class MongoDataInsert {
     public static void main(String[] args) {
         String directoryPath = "./Results";
-        String mongoUri = "mongodb://root:password@ossprojectmap-mongo-1:27017";
+        String mongoUri = "mongodb://root:password@oss-project-map-mongo-1:27017";
         // String mongoUri = "mongodb://root:password@localhost:27017"; // For Debug
-        String dbName = "testDB"; // For Debug
+        // String dbName = "testDB"; // For Debug
+        String dbName = "ProjSelector"; // For Production Environment
         String collectionName = "similarity";
 
         // MongoDBに接続

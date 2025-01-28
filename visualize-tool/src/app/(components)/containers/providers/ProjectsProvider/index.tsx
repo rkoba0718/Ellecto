@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
 import { useRouter } from 'next/navigation';
 
 import { ProjectInfo } from '@/app/types/ProjectInfo';
 import { Filters } from '@/app/types/Filters';
-import { searchResultState, sortCommandState, filtersState } from '@/app/lib/atoms';
+import { useSearchResultStore } from '@/app/lib/stores/useSearchResultStore';
+import { useSortCommandStore, useSortOrderStore } from '@/app/lib/stores/useSortStore';
+import { useFiltersStore } from '@/app/lib/stores/useFiltersStore';
 import { projectsPerPage } from './config';
 
 type ProjectsProviderProps = {
@@ -22,9 +23,10 @@ type ProjectsProviderProps = {
 };
 
 const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
-  const result = useRecoilValue(searchResultState);
-  const [sort, setSort] = useRecoilState(sortCommandState);
-  const [filters, setFilters] = useRecoilState(filtersState);
+  const result = useSearchResultStore((state) => state.searchResult);
+  const { sortCommand, setSortCommand } = useSortCommandStore();
+  const sortOrder = useSortOrderStore((state) => state.sortOrder);
+  const { filters, setFilters } = useFiltersStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredResult, setFilteredResult] = useState<ProjectInfo[]>(result);
   const navigation = useRouter();
@@ -36,7 +38,7 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
     sortOrder: string
   ) => {
     setFilters(filters);
-    setSort(sort);
+    setSortCommand(sort);
     const filtered = result
       .filter(project =>
         (filters.license ? project.License.toLowerCase().includes(filters.license.toLowerCase()) : true) &&
@@ -76,8 +78,8 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
 
   // 初期表示でフィルタリングとソートを適用
   useEffect(() => {
-    applyFiltersAndSort(filters, sort, 'up');
-  }, [filters, sort, result]);
+    applyFiltersAndSort(filters, sortCommand, sortOrder);
+  }, [filters, sortCommand, result]);
 
 
   const startIndex = (currentPage - 1) * projectsPerPage;
@@ -88,7 +90,7 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
     navigation.push(`/projects?skip=${skip}`);
   }, [currentPage, navigation]);
 
-  return <>{children(currentResult, currentPage, setCurrentPage, filteredResult.length, sort, filters, applyFiltersAndSort)}</>
+  return <>{children(currentResult, currentPage, setCurrentPage, filteredResult.length, sortCommand, filters, applyFiltersAndSort)}</>
 };
 
 export default ProjectsProvider;

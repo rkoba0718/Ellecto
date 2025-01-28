@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRecoilState } from 'recoil';
+import React from "react";
 
 import { ProjectInfo } from "@/app/types/ProjectInfo";
 import { Filters } from "@/app/types/Filters";
-import { sortOrderState } from "@/app/lib/atoms";
+import { useSortOrderStore } from "@/app/lib/stores/useSortStore";
 import { projectsPerPage } from "@/app/(components)/containers/providers/ProjectsProvider/config";
 import ResultSummary from "@/app/(components)/presentationals/projects/ResultSummary";
 import PaginationContainer from "../../../common/containers/PaginationContainer";
@@ -31,7 +30,7 @@ const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
     applyFiltersAndSort
 }) => {
     const totalPages = Math.ceil(totalProjects / projectsPerPage);
-    const [sortOrder, setSortOrder] = useRecoilState(sortOrderState);
+    const { sortOrder, setSortOrder } = useSortOrderStore();
 
     const handleSortChange = (sortValue: string) => {
         applyFiltersAndSort(filters, sortValue, sortOrder);

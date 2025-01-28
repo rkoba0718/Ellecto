@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { searchResultState, sortCommandState, filtersState, sortOrderState } from "@/app/lib/atoms";
 
+import { useSearchResultStore } from "@/app/lib/stores/useSearchResultStore";
+import { useSortCommandStore, useSortOrderStore } from "@/app/lib/stores/useSortStore";
+import { useFiltersStore } from "@/app/lib/stores/useFiltersStore";
 import SearchForm from "../../presentationals/SearchForm";
 
 const SearchFormContainer: React.FC = () => {
@@ -16,10 +17,10 @@ const SearchFormContainer: React.FC = () => {
     const [lastUpdateYears, setLastUpdateYears] = useState<number | ''>('');
     const [lastUpdateMonths, setLastUpdateMonths] = useState<number | ''>('');
     const [maxDependencies, setMaxDependencies] = useState<number | ''>('');
-    const [result, setResult] = useRecoilState(searchResultState);
-    const setSort = useSetRecoilState(sortCommandState);
-    const setSortOrder = useSetRecoilState(sortOrderState);
-    const setFilters = useSetRecoilState(filtersState);
+    const setSearchResult = useSearchResultStore((state) => state.setSearchResult);
+    const setSortCommand = useSortCommandStore((state) => state.setSortCommand);
+    const setSortOrder = useSortOrderStore((state) => state.setSortOrder);
+    const setFilters = useFiltersStore((state) => state.setFilters);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
@@ -65,7 +66,7 @@ const SearchFormContainer: React.FC = () => {
                 throw new Error('Search failed');
             }
             const data = await response.json();
-            setResult(data);
+            setSearchResult(data);
             router.push('/projects');
         } catch (error) {
             console.log('Error searching projects:', error);
@@ -75,7 +76,7 @@ const SearchFormContainer: React.FC = () => {
 
     // sort，sortOrder，filterを初期化
     useEffect(() => {
-        setSort('relevance');
+        setSortCommand('relevance');
         setSortOrder('up');
         setFilters({ license: '', language: '' });
     },[]);

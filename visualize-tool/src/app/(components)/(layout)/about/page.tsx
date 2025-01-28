@@ -55,7 +55,7 @@ const About: React.FC = () => {
                     <Image src="/typescript-logo.svg" alt="TypeScript" width={120} height={120} />
                     <Image src="/mongodb-logo.svg" alt="MongoDB" width={120} height={120} />
                     <Image src="/docker-logo.svg" alt="Docker" width={120} height={120} />
-                    <Image src="/recoil-logo.svg" alt="Recoil" width={120} height={120} />
+                    <Image src="/zustand-logo.svg" alt="Zustand" width={120} height={120} />
                 </div>
                 <div className="text-gray-700">
                     Currently, Ellecto uses OSS package data provided by the official Ubuntu repository.

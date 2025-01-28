@@ -5,7 +5,6 @@ import FooterContainer from "./(components)/containers/Footer";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
-import RecoilProvider from "./(components)/containers/providers/RecoilProvider";
 import "./styles/globals.css";
 
 config.autoAddCss = false; // FontAwesome の CSS オートマウントを無効化
@@ -24,13 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <RecoilProvider>
-          <HeaderContainer />
+        <HeaderContainer />
           <main className="content">
             {children}
           </main>
-          <FooterContainer />
-        </RecoilProvider>
+        <FooterContainer />
       </body>
     </html>
   );

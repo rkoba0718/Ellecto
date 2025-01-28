@@ -3,6 +3,21 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 
+import {
+    useSearchTermStore,
+    useLanguageStore,
+    useLicenseStore,
+    useMinYearsStore,
+    useLastUpdateYearsStore,
+    useLastUpdateMonthsStore,
+    useMaxDependenciesStore,
+    useSearchTermWeightStore,
+    useLanguageWeightStore,
+    useLicenseWeightStore,
+    useMinYearsWeightStore,
+    useLastUpdateWeightStore,
+    useMaxDependenciesWeightStore
+} from "@/app/lib/stores/useSearchStore";
 import { useSearchResultStore } from "@/app/lib/stores/useSearchResultStore";
 import { useSortCommandStore, useSortOrderStore } from "@/app/lib/stores/useSortStore";
 import { useFiltersStore } from "@/app/lib/stores/useFiltersStore";
@@ -10,13 +25,13 @@ import SearchForm from "../../presentationals/SearchForm";
 
 const SearchFormContainer: React.FC = () => {
     const router = useRouter();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [language, setLanguage] = useState('');
-    const [license, setLicense] = useState('');
-    const [minYears, setMinYears] = useState<number | ''>('');
-    const [lastUpdateYears, setLastUpdateYears] = useState<number | ''>('');
-    const [lastUpdateMonths, setLastUpdateMonths] = useState<number | ''>('');
-    const [maxDependencies, setMaxDependencies] = useState<number | ''>('');
+    const { searchTerm, setSearchTerm } = useSearchTermStore();
+    const { language, setLanguage } = useLanguageStore();
+    const { license, setLicense } = useLicenseStore();
+    const { minYears, setMinYears } = useMinYearsStore();
+    const { lastUpdateYears, setLastUpdateYears } = useLastUpdateYearsStore();
+    const { lastUpdateMonths, setLastUpdateMonths } = useLastUpdateMonthsStore();
+    const { maxDependencies, setMaxDependencies } = useMaxDependenciesStore();
     const setSearchResult = useSearchResultStore((state) => state.setSearchResult);
     const setSortCommand = useSortCommandStore((state) => state.setSortCommand);
     const setSortOrder = useSortOrderStore((state) => state.setSortOrder);
@@ -25,12 +40,12 @@ const SearchFormContainer: React.FC = () => {
     const [error, setError] = useState(false);
 
     // 各検索条件の重み
-    const [searchTermWeight, setSearchTermWeight] = useState(1);
-    const [languageWeight, setLanguageWeight] = useState(1);
-    const [licenseWeight, setLicenseWeight] = useState(1);
-    const [minYearsWeight, setMinYearsWeight] = useState(1);
-    const [lastUpdateWeight, setLastUpdateWeight] = useState(1);
-    const [maxDependenciesWeight, setMaxDependenciesWeight] = useState(1);
+    const { searchTermWeight, setSearchTermWeight } = useSearchTermWeightStore();
+    const { languageWeight, setLanguageWeight } = useLanguageWeightStore();
+    const { licenseWeight, setLicenseWeight } = useLicenseWeightStore();
+    const { minYearsWeight, setMinYearsWeight } = useMinYearsWeightStore();
+    const { lastUpdateWeight, setLastUpdateWeight } = useLastUpdateWeightStore();
+    const { maxDependenciesWeight, setMaxDependenciesWeight } = useMaxDependenciesWeightStore();
 
     const handleSearchSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

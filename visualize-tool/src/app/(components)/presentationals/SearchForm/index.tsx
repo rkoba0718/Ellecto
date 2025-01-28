@@ -9,8 +9,8 @@ import Loading from "../../common/presentationals/Loading";
 type WeightButtonProps = {
     label: string;
     weight: number;
-    setWeight: React.Dispatch<React.SetStateAction<number>>;
-  };
+    setWeight: (weight: number) => void;
+};
 
 const WeightButton: React.FC<WeightButtonProps> = ({ label, weight, setWeight }) => {
     return (
@@ -35,7 +35,7 @@ type SearchFormProps = {
     loading: boolean;
     error: boolean;
     searchTerm: string;
-    setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+    setSearchTerm: (searchTerm: string) => void;
     handleSearchSubmit: (e: React.FormEvent) => void;
     options: {
         language: string;
@@ -48,14 +48,14 @@ type SearchFormProps = {
         maxDependencies: number | '';
     }
     optionsSets: {
-        setLanguage: React.Dispatch<React.SetStateAction<string>>;
-        setLicense: React.Dispatch<React.SetStateAction<string>>;
-        setMinYears: React.Dispatch<React.SetStateAction<number | ''>>;
+        setLanguage: (language: string) => void;
+        setLicense: (license: string) => void;
+        setMinYears: (minYears: number | "") => void;
         lastUpdateSets: {
-            setYears: React.Dispatch<React.SetStateAction<number | ''>>;
-            setMonth: React.Dispatch<React.SetStateAction<number | ''>>;
+            setYears: (lastUpdateYears: number | "") => void;
+            setMonth: (lastUpdateMonths: number | "") => void;
         };
-        setMaxDependencies: React.Dispatch<React.SetStateAction<number | ''>>;
+        setMaxDependencies: (maxDependencies: number | "") => void;
     }
     weights: {
         searchTermWeight: number;
@@ -66,12 +66,12 @@ type SearchFormProps = {
         maxDependenciesWeight: number;
     };
     weightSets: {
-        setSearchTermWeight: React.Dispatch<React.SetStateAction<number>>;
-        setLanguageWeight: React.Dispatch<React.SetStateAction<number>>;
-        setLicenseWeight: React.Dispatch<React.SetStateAction<number>>;
-        setMinYearsWeight: React.Dispatch<React.SetStateAction<number>>;
-        setLastUpdateWeight: React.Dispatch<React.SetStateAction<number>>;
-        setMaxDependenciesWeight: React.Dispatch<React.SetStateAction<number>>;
+        setSearchTermWeight: (searchTermWeight: number) => void;
+        setLanguageWeight: (languageWeight: number) => void;
+        setLicenseWeight: (licenseWeight: number) => void;
+        setMinYearsWeight: (minYearsWeight: number) => void;
+        setLastUpdateWeight: (lastUpdateWeight: number) => void;
+        setMaxDependenciesWeight: (maxDependencies: number) => void;
     };
 };
 

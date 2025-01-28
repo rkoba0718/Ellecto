@@ -11,6 +11,23 @@ export async function connectToDatabase() {
     return client.db(process.env.DB_NAME);
 };
 
+// 検索精度向上のために検索ワードから除外するワード
+const excludeKeywords = [
+    'in',
+    'of',
+    'for',
+    'to',
+    'tool',
+    'library',
+    'plugin',
+];
+
+// 除外ワードを除外する関数
+const generateExcludedSearchTerm = (searchTerm: string) => {
+    const excludedSearchTerm = searchTerm.split(' ').filter((s) => !excludeKeywords.includes(s)).join(' ');
+    return excludedSearchTerm;
+};
+
 // 正規表現の特殊文字をエスケープする関数
 const escapeRegExp = (string: string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $&は一致した部分全体を参照
@@ -30,10 +47,12 @@ export async function searchProjects(
     const db = await connectToDatabase();
     const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
 
+    const excludedSearchTerm = generateExcludedSearchTerm(searchTerm);
+
     // キーワード正規表現を単語境界を緩和して作成
-    const keywordRegex = new RegExp(searchTerm.split(' ').join('|'), 'i');
-    const languageRegex = new RegExp(language.split(' ').join('|'), 'i');
-    const licenseRegex = new RegExp(license.split(' ').join('|'), 'i');
+    const keywordRegex = new RegExp(excludedSearchTerm.split(' ').map((k) => escapeRegExp(k)).join('|'), 'i');
+    const languageRegex = new RegExp(language.split(' ').map((l) => escapeRegExp(l)).join('|'), 'i');
+    const licenseRegex = new RegExp(license.split(' ').map((l) => escapeRegExp(l)).join('|'), 'i');
 
     // 今日の日付を取得
     const currentDate = new Date();
@@ -70,7 +89,7 @@ export async function searchProjects(
         ]
     };
 
-    const limit = 2000; // 制限を2000に設定
+    const limit = 3000; // 制限を3000に設定
     const results = await collection.find(query).limit(limit).toArray();
 
     // スコアリング処理
@@ -78,7 +97,7 @@ export async function searchProjects(
         let score = 0;
 
         // 検索ワードのスコア加算
-        const keywords = searchTerm.split(' ');
+        const keywords = excludedSearchTerm.split(' ');
         keywords.map((keyword) => {
             const escapeKeyword = escapeRegExp(keyword);
             if (new RegExp(escapeKeyword, 'i').test(project.Name)) score += weight.searchTerm * 1;

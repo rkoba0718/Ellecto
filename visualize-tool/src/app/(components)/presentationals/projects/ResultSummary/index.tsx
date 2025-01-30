@@ -4,6 +4,8 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
+import { Filters } from "@/app/types/Filters";
+
 type ResultSummaryProps = {
     currentPage: number;
     totalProjects: number;
@@ -12,8 +14,9 @@ type ResultSummaryProps = {
     onSortChange: (sort: string) => void;
     sortOrder: "up" | "down";
     onToggleSortOrder: (sortOrder: "up" | "down") => void;
-    filters: { license: string; language: string };
-    onFilterChange: (filters: { license: string; language: string }) => void;
+    sectionList: string[];
+    filters: Filters;
+    onFilterChange: (filters: Filters) => void;
 }
 
 const ResultSummary: React.FC<ResultSummaryProps> = ({
@@ -24,15 +27,16 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
     onSortChange,
     sortOrder,
     onToggleSortOrder,
+    sectionList,
     filters,
     onFilterChange
 }) => {
     return (
-        <div className="flex justify-between items-center mb-6">
-            <p>
-                Showing page {currentPage} of {totalPages} (Total {totalProjects} projects)
-            </p>
-            <div className="flex items-center space-x-4">
+        <div className="mb-6">
+            <div className="flex justify-between mb-4">
+                <p>
+                    Showing page {currentPage} of {totalPages} (Total {totalProjects} projects)
+                </p>
                 <div className="flex items-center">
                     <label htmlFor="sort" className="mr-2">Sort by:</label>
                     <select
@@ -59,7 +63,23 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
                         <FontAwesomeIcon icon={faArrowDown} className={sortOrder === 'down' ? 'text-gray-500' : 'text-gray-300'} />
                     </button>
                 </div>
+            </div>
 
+            <div className="flex justify-end space-x-4">
+                <div>
+                    <label htmlFor="section" className="mr-2">Section:</label>
+                    <select
+                        id="section"
+                        value={filters.section}
+                        onChange={(e) => onFilterChange({ ...filters, section: e.target.value })}
+                        className="border p-1"
+                    >
+                        <option value='' selected>---------</option>
+                        {sectionList.map((section, index) => (
+                            <option key={index} value={section}>{section}</option>
+                        ))}
+                    </select>
+                </div>
                 <div>
                     <label htmlFor="language" className="mr-2">Language:</label>
                     <input

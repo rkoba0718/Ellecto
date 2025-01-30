@@ -32,8 +32,8 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
   const navigation = useRouter();
 
   // フィルタとソートの適用
-  const applyFiltersAndSort: (filters: { license: string; language: string }, sort: string, sortOrder: string) => void = (
-    filters: { license: string; language: string },
+  const applyFiltersAndSort: (filters: Filters, sort: string, sortOrder: string) => void = (
+    filters: Filters,
     sort: string,
     sortOrder: string
   ) => {
@@ -41,6 +41,7 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
     setSortCommand(sort);
     const filtered = result
       .filter(project =>
+        (filters.section && project.Section ? project.Section.toLowerCase().includes(filters.section.toLowerCase()) : true) &&
         (filters.license ? project.License.toLowerCase().includes(filters.license.toLowerCase()) : true) &&
         (filters.language
           ? (

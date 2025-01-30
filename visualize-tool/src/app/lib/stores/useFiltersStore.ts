@@ -8,6 +8,6 @@ type FiltersStore = {
 };
 
 export const useFiltersStore = create<FiltersStore>((set) => ({
-	filters: { license: '', language: '' },
+	filters: { section: '', license: '', language: '' },
 	setFilters: (filters) => set({ filters: filters })
 }));

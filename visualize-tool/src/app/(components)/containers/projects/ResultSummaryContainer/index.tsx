@@ -6,6 +6,7 @@ import { ProjectInfo } from "@/app/types/ProjectInfo";
 import { Filters } from "@/app/types/Filters";
 import { useSortOrderStore } from "@/app/lib/stores/useSortStore";
 import { projectsPerPage } from "@/app/(components)/containers/providers/ProjectsProvider/config";
+import { sectionList } from "@/app/constants/sectionList";
 import ResultSummary from "@/app/(components)/presentationals/projects/ResultSummary";
 import PaginationContainer from "../../../common/containers/PaginationContainer";
 import SearchResultContainer from "../SearchResultContainer";
@@ -41,7 +42,7 @@ const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
         applyFiltersAndSort(filters, sort, sortOrder);
     };
 
-    const handleFilterChange = (newFilters: { license: string; language: string }) => {
+    const handleFilterChange = (newFilters: Filters) => {
         applyFiltersAndSort(newFilters, sort, sortOrder);
     };
 
@@ -55,6 +56,7 @@ const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
                 onSortChange={handleSortChange}
                 sortOrder={sortOrder}
                 onToggleSortOrder={onToggleSortOrder}
+                sectionList={sectionList}
                 filters={filters}
                 onFilterChange={handleFilterChange}
             />

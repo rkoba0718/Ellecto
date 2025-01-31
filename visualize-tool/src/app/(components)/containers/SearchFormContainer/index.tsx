@@ -93,7 +93,7 @@ const SearchFormContainer: React.FC = () => {
     useEffect(() => {
         setSortCommand('relevance');
         setSortOrder('up');
-        setFilters({ license: '', language: '' });
+        setFilters({ section: '', license: '', language: '' });
     },[]);
 
     return (

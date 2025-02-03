@@ -57,6 +57,8 @@ type SearchFormProps = {
         };
         setMaxDependencies: (maxDependencies: number | "") => void;
     }
+    popularLanguageList: string[];
+    notPopularLanguageList: string[];
     weights: {
         searchTermWeight: number;
         languageWeight: number;
@@ -83,6 +85,8 @@ const SearchForm: React.FC<SearchFormProps> = ({
     error,
     options,
     optionsSets,
+    popularLanguageList,
+    notPopularLanguageList,
     weights,
     weightSets,
 }) => {
@@ -123,14 +127,28 @@ const SearchForm: React.FC<SearchFormProps> = ({
                             These options allow a more detailed search
                         </p>
                         <div className="mb-4">
-                            <label className="block text-gray-700 mb-1">Language</label>
-                            <input
-                                type="text"
+                            <label className="block mb-1 flex space-x-1">
+                                <p className="text-gray-700">Language</p>
+                                <p className="text-gray-500">(Written in or Working in)</p>
+                            </label>
+                            <select
+                                id="language"
                                 value={options.language}
                                 onChange={(e) => optionsSets.setLanguage(e.target.value)}
-                                placeholder="Type Language written in or available for"
-                                className="w-full bg-white border border-gray-300 rounded px-3 py-2"
-                            />
+                                className="w-full border border-gray-300 rounded p-2"
+                            >
+                                <option value='' className="text-gray-700" selected>Any language</option>
+                                <optgroup label="Popular">
+                                    {popularLanguageList.map((language, index) => (
+                                        <option key={index} value={language}>{language}</option>
+                                    ))}
+                                </optgroup>
+                                <optgroup label="Everything else">
+                                    {notPopularLanguageList.map((language, index) => (
+                                        <option key={index} value={language}>{language}</option>
+                                    ))}
+                                </optgroup>
+                            </select>
                         </div>
 
                         <div className="mb-4">

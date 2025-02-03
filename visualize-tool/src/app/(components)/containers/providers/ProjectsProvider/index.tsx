@@ -43,12 +43,12 @@ const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) => {
       .filter(project =>
         (filters.section && project.Section ? project.Section.toLowerCase().includes(filters.section.toLowerCase()) : true) &&
         (filters.license ? project.License.toLowerCase().includes(filters.license.toLowerCase()) : true) &&
-        (filters.language
-          ? (
-            project.Language.Lang1.Name.toLowerCase().includes(filters.language.toLowerCase()) ||
-            project.Description.summary.toLowerCase().includes(filters.language.toLowerCase()) ||
-            project.Description.detail.toLowerCase().includes(filters.language.toLowerCase())
-          )
+        (filters.language ? project.Language.Lang1.Name.toLowerCase() === filters.language.toLowerCase()
+          // ? (
+          //   project.Language.Lang1.Name.toLowerCase() === filters.language.toLowerCase() ||
+          //   project.Description.summary.toLowerCase().includes(filters.language.toLowerCase()) ||
+          //   project.Description.detail.toLowerCase().includes(filters.language.toLowerCase())
+          // )
           : true
         )
       )

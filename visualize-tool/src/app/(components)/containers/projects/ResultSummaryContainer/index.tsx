@@ -7,6 +7,7 @@ import { Filters } from "@/app/types/Filters";
 import { useSortOrderStore } from "@/app/lib/stores/useSortStore";
 import { projectsPerPage } from "@/app/(components)/containers/providers/ProjectsProvider/config";
 import { sectionList } from "@/app/constants/sectionList";
+import { popularLanguageList, notPopularLanguageList } from "@/app/constants/languageList";
 import ResultSummary from "@/app/(components)/presentationals/projects/ResultSummary";
 import PaginationContainer from "../../../common/containers/PaginationContainer";
 import SearchResultContainer from "../SearchResultContainer";
@@ -57,6 +58,8 @@ const ResultSummaryContainer: React.FC<ResultSummaryContainerProps> = ({
                 sortOrder={sortOrder}
                 onToggleSortOrder={onToggleSortOrder}
                 sectionList={sectionList}
+                popularLanguageList={popularLanguageList}
+                notPopularLanguageList={notPopularLanguageList}
                 filters={filters}
                 onFilterChange={handleFilterChange}
             />

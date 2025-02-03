@@ -21,6 +21,7 @@ import {
 import { useSearchResultStore } from "@/app/lib/stores/useSearchResultStore";
 import { useSortCommandStore, useSortOrderStore } from "@/app/lib/stores/useSortStore";
 import { useFiltersStore } from "@/app/lib/stores/useFiltersStore";
+import { popularLanguageList, notPopularLanguageList } from "@/app/constants/languageList";
 import SearchForm from "../../presentationals/SearchForm";
 
 const SearchFormContainer: React.FC = () => {
@@ -123,6 +124,8 @@ const SearchFormContainer: React.FC = () => {
                 },
                 setMaxDependencies: setMaxDependencies
             }}
+            popularLanguageList={popularLanguageList}
+            notPopularLanguageList={notPopularLanguageList}
             weights={{
                 searchTermWeight: searchTermWeight,
                 languageWeight: languageWeight,

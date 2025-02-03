@@ -51,7 +51,8 @@ export async function searchProjects(
 
     // キーワード正規表現を単語境界を緩和して作成
     const keywordRegex = new RegExp(excludedSearchTerm.split(' ').map((k) => escapeRegExp(k)).join('|'), 'i');
-    const languageRegex = new RegExp(language.split(' ').map((l) => escapeRegExp(l)).join('|'), 'i');
+    const languageRegex = new RegExp(escapeRegExp(language), 'i'); // 指定した言語で書かれているかどうかを判定するためのRegex
+    const languageDescriptionRegex = new RegExp(`\\b${escapeRegExp(language)}\\b`, 'i'); // 指定したlanguageで使用できるかどうかを判定するためのRegex
     const licenseRegex = new RegExp(license.split(' ').map((l) => escapeRegExp(l)).join('|'), 'i');
 
     // 今日の日付を取得
@@ -73,8 +74,8 @@ export async function searchProjects(
                 { 'Description.detail': { $regex: keywordRegex } }
             ]},
             { $or: [
-                { 'Language.Lang1.Name': { $regex: languageRegex } },
-                { 'Description.summary': { $regex: languageRegex } },
+                { 'Language.Lang1.Name': { $eq: languageRegex } },
+                { 'Description.summary': { $regex: languageDescriptionRegex } },
             ]},
             { License: { $regex: licenseRegex } },
             minYears !== '' ? { FirstCommitDate: { $lte: `${currentDate.getFullYear() - minYears}-12-31` } } : {},
@@ -116,12 +117,9 @@ export async function searchProjects(
 
         // 言語のスコア加算
         if (language !== '') {
-            const languages = language.split(' ');
-            languages.map((lang) => {
-                const escapeLang = escapeRegExp(lang);
-                if (new RegExp(escapeLang, 'i').test(project.Description['summary'])) score += weight.language * 1;
-                if (new RegExp(escapeLang, 'i').test(project.Language.Lang1.Name)) score += weight.language * 1;
-            })
+            const escapeLang = escapeRegExp(language);
+            if (new RegExp(escapeLang, 'i').test(project.Description['summary'])) score += weight.language * 1;
+            if (new RegExp(escapeLang, 'i').test(project.Language.Lang1.Name)) score += weight.language * 1;
         }
 
         // ライセンスのスコア加算

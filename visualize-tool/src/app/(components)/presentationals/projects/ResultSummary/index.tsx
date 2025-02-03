@@ -15,6 +15,8 @@ type ResultSummaryProps = {
     sortOrder: "up" | "down";
     onToggleSortOrder: (sortOrder: "up" | "down") => void;
     sectionList: string[];
+    popularLanguageList: string[];
+    notPopularLanguageList: string[];
     filters: Filters;
     onFilterChange: (filters: Filters) => void;
 }
@@ -28,6 +30,8 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
     sortOrder,
     onToggleSortOrder,
     sectionList,
+    popularLanguageList,
+    notPopularLanguageList,
     filters,
     onFilterChange
 }) => {
@@ -81,15 +85,25 @@ const ResultSummary: React.FC<ResultSummaryProps> = ({
                     </select>
                 </div>
                 <div>
-                    <label htmlFor="language" className="mr-2">Language:</label>
-                    <input
+                    <label htmlFor="section" className="mr-2">Language:</label>
+                    <select
                         id="language"
-                        type="text"
                         value={filters.language}
                         onChange={(e) => onFilterChange({ ...filters, language: e.target.value })}
                         className="border p-1"
-                        placeholder="Filter by Language"
-                    />
+                    >
+                        <option value='' selected>---------</option>
+                        <optgroup label="Popular">
+                            {popularLanguageList.map((language, index) => (
+                                <option key={index} value={language}>{language}</option>
+                            ))}
+                        </optgroup>
+                        <optgroup label="Everything else">
+                            {notPopularLanguageList.map((language, index) => (
+                                <option key={index} value={language}>{language}</option>
+                            ))}
+                        </optgroup>
+                    </select>
                 </div>
                 <div>
                     <label htmlFor="license" className="mr-2">License:</label>

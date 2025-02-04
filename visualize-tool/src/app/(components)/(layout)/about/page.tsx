@@ -21,7 +21,7 @@ const About: React.FC = () => {
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Use Cases and Target Audience</h2>
                 <p className="text-gray-700 mb-4">
                     Ellecto is especially useful for software developers who need to carefully evaluate various OSS options.
-                    Additionally, software users who want to identify suitable software for their needs can benefit from Ellecto's detailed search and filtering features. 
+                    Additionally, software users who want to identify suitable software for their needs can benefit from Ellecto's detailed search and filtering features.
                     Whether you are a developer building new software or a user looking for reliable OSS solutions, Ellecto helps streamline the selection process.
                 </p>
             </section>
@@ -50,16 +50,16 @@ const About: React.FC = () => {
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Technical Background</h2>
                 <div className="flex justify-start items-center space-x-8 mb-4">
-                    <Image src="/nextjs-logo.svg" alt="Next.js" width={120} height={120} />
-                    <Image src="/react-logo.svg" alt="React" width={120} height={120} />
-                    <Image src="/typescript-logo.svg" alt="TypeScript" width={120} height={120} />
-                    <Image src="/mongodb-logo.svg" alt="MongoDB" width={120} height={120} />
-                    <Image src="/docker-logo.svg" alt="Docker" width={120} height={120} />
-                    <Image src="/zustand-logo.svg" alt="Zustand" width={120} height={120} />
+                    <Image src="/img/nextjs-logo.svg" alt="Next.js" width={120} height={120} />
+                    <Image src="/img/react-logo.svg" alt="React" width={120} height={120} />
+                    <Image src="/img/typescript-logo.svg" alt="TypeScript" width={120} height={120} />
+                    <Image src="/img/mongodb-logo.svg" alt="MongoDB" width={120} height={120} />
+                    <Image src="/img/docker-logo.svg" alt="Docker" width={120} height={120} />
+                    <Image src="/img/zustand-logo.svg" alt="Zustand" width={120} height={120} />
                 </div>
                 <div className="text-gray-700">
                     Currently, Ellecto uses OSS package data provided by the official Ubuntu repository.
-                    <Image src="/ubuntu-logo.svg" alt="Ubuntu" width={120} height={120} className="mt-2" />
+                    <Image src="/img/ubuntu-logo.svg" alt="Ubuntu" width={120} height={120} className="mt-2" />
                 </div>
             </section>
 

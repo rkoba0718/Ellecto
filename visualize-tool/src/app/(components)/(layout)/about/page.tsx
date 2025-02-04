@@ -58,15 +58,18 @@ const About: React.FC = () => {
                     <Image src="/img/zustand-logo.svg" alt="Zustand" width={120} height={120} />
                 </div>
                 <div className="text-gray-700">
-                    Currently, Ellecto uses OSS package data provided by the official Ubuntu repository.
-                    <Image src="/img/ubuntu-logo.svg" alt="Ubuntu" width={120} height={120} className="mt-2" />
+                    Currently, Ellecto uses OSS package data provided by the official Ubuntu and Debian repository.
+                    <div className="flex justify-start items-center space-x-8 mt-2 mb-2">
+                        <Image src="/img/ubuntu-logo.svg" alt="Ubuntu" width={120} height={120} />
+                        <Image src="/img/debian-logo.svg" alt="Debian" width={120} height={120} />
+                    </div>
                 </div>
             </section>
 
             <section className="mb-10">
                 <h2 className="text-2xl font-semibold mb-4 text-green-700">Future Plans</h2>
                 <p className="text-gray-700">
-                    Ellecto aims to expand its data sources in the future to include other Linux distributions such as Debian and Fedora,
+                    Ellecto aims to expand its data sources in the future to include other Linux distributions such as Fedora,
                     providing users with even more OSS options.
                 </p>
             </section>

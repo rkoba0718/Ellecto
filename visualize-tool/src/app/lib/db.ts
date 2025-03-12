@@ -45,7 +45,7 @@ export async function searchProjects(
     weight: any
 ) {
     const db = await connectToDatabase();
-    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+    const collection = db.collection(process.env.PROJECT_COLLECTION_NAME as string);
 
     const excludedSearchTerm = generateExcludedSearchTerm(searchTerm);
 
@@ -175,7 +175,7 @@ export async function getSimilarProjects(packageName: string): Promise<string[]>
 // 与えられたプロジェクト名のデータを取得する関数
 export async function getProjectDetails(projectName: string): Promise<any> {
     const db = await connectToDatabase();
-    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+    const collection = db.collection(process.env.PROJECT_COLLECTION_NAME as string);
 
     // プロジェクト名でデータベースから詳細情報を取得
     const project = await collection.findOne({ Name: projectName });
@@ -187,7 +187,7 @@ export async function getProjectDetails(projectName: string): Promise<any> {
 // REST APIによって，取得したコミットデータをDBに保存する関数（キャッシュすることで，apiレスポンスの回数を減らすことができる）
 export async function cacheCommitData(projectId: ObjectId, monthlyCommits: { [month: string]: number }, lastFetchDate: Date) {
     const db = await connectToDatabase();
-    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+    const collection = db.collection(process.env.PROJECT_COLLECTION_NAME as string);
 
     const commitData = {
         lastFetchDate: lastFetchDate,
@@ -202,7 +202,7 @@ export async function cacheCommitData(projectId: ObjectId, monthlyCommits: { [mo
 // 与えられたプロジェクトIDのプロジェクトのLastCommitDate（最新コミット日）を更新する関数
 export async function updateLastCommitDate(projectId: ObjectId, lastCommitDate: string) {
     const db = await connectToDatabase();
-    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+    const collection = db.collection(process.env.PROJECT_COLLECTION_NAME as string);
 
     await collection.updateOne(
         { _id: projectId },
@@ -212,7 +212,7 @@ export async function updateLastCommitDate(projectId: ObjectId, lastCommitDate: 
 
 export async function getTransitiveDependencies(projectName: string): Promise<any> {
     const db = await connectToDatabase();
-    const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+    const collection = db.collection(process.env.PROJECT_COLLECTION_NAME as string);
 
     // プロジェクト名でデータベースから詳細情報を取得
     const project = await collection.findOne({ Name: projectName });

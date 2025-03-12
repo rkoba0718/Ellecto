@@ -5,7 +5,7 @@ import { connectToDatabase } from '@/app/lib/db';
 export async function GET(req: Request, { params }: { params: { objectId: string } }) {
     try {
         const db = await connectToDatabase();
-        const collection = db.collection(process.env.UBUNTU_COLLECTION_NAME as string);
+        const collection = db.collection(process.env.PROJECT_COLLECTION_NAME as string);
 
         const { objectId } = params;
 
